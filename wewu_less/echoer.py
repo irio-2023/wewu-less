@@ -31,4 +31,4 @@ def test_handler(request: flask.Request):
 @wewu_cloud_function
 def second_test_handler(request: flask.Request):
     args = request.args.to_dict()
-    return "OKEJ"
+    return str(args)
