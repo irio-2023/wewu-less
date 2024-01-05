@@ -27,6 +27,7 @@ def test_handler(request: flask.Request):
     dumbObject = schema.load(args)
     return str(dumbObject)
 
+
 @wewu_cloud_function
 def second_test_handler(request: flask.Request):
     args = request.args.to_dict()
