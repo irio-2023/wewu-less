@@ -2,6 +2,7 @@ name: Build & Tests
 on:
   push:
     branches: [ '**' ]
+    tags: [ '**' ]
 
 jobs:
   build_and_push:
@@ -57,8 +58,12 @@ jobs:
 
   deploy:
     name: Deploy Terraform
+    concurrency:
+      group: wewu_less_deploy_terraform
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     needs: [run_unit_tests]
+    if: startsWith(github.event.ref, 'refs/tag/deploy')
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
     steps:
@@ -106,3 +111,27 @@ jobs:
 
       - name: Apply terraform
         run: terraform apply -auto-approve -parallelism=5
+
+  destroy:
+    name: Destroy Terraform
+    concurrency:
+      group: wewu_less_deploy_terraform
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    needs: [run_unit_tests]
+    if: startsWith(github.event.ref, 'refs/tag/destroy')
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Init terraform
+        run: terraform init
+
+      - name: Apply terraform
+        run: terraform apply -destroy -auto-approve -parallelism=5
