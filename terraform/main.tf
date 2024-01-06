@@ -10,7 +10,6 @@ terraform {
 provider "google" {
   project = "wewu_less"
   region = local.region
-  credentials = file("/Users/pfuchs/.config/gcloud/application_default_credentials.json")
 }
 
 resource "random_id" "wewu_less_bucket_id" {
