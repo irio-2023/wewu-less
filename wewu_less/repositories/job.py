@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from bson import ObjectId
+
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
@@ -34,7 +36,11 @@ class JobRepository:
             "isCancelled": False,
         }
 
-        mongo_job_iterable = self.jobs.find(mongo_query)
+        mongo_job_iterable = list(self.jobs.find(mongo_query))
+        for mongo_job in mongo_job_iterable:
+            object_id: ObjectId = mongo_job["_id"]
+            mongo_job["_id"] = str(object_id)
+
         return list(map(self._mongo_to_model, mongo_job_iterable))
 
     def update_expiration_date(self, job_ids: list[str], expiration_threshold: int):
