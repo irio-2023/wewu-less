@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  wewu-less-unit-tests:
+    image: wewu-less-app
+    entrypoint:
+      - poetry
+      - run
+      - pytest
+      - "-vvv"
+      - "-s"
+      - tests/unit
