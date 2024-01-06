@@ -29,8 +29,8 @@ resource "google_storage_bucket" "wewu_less" {
 }
 
 resource "google_storage_bucket_object" "wewu_less_sources" {
-  source = "${path.module}/cloud_platform/wewu_less.zip"
-  name = "wewu_less_sources.zip"
+  source = local.source_code_path
+  name = "$wewu_less_sources-${local.source_code_hash}.zip"
   bucket = google_storage_bucket.wewu_less.name
 }
 

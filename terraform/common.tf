@@ -5,4 +5,6 @@ locals {
   }
 
   gcp_project = "wewu-410223"
+  source_code_path = "${path.module}/cloud_platform/wewu_less.zip"
+  source_code_hash = filebase64sha256(local.source_code_path)
 }
