@@ -52,9 +52,7 @@ jobs:
       - name: Run unit tests
         env:
           IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
-        run: |
-          echo IMAGE NAME TO $IMAGE_NAME
-          docker compose up wewu-less-unit-tests
+        run: docker compose up wewu-less-unit-tests --exit-code-from=wewu-less-unit-tests
 
 
   build_and_test:
