@@ -5,6 +5,11 @@ terraform {
       version = "5.1.0"
     }
   }
+
+  backend "gcs" {
+    bucket = "wewu-less-state"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {
