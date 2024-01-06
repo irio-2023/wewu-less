@@ -33,13 +33,13 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v5
-#        with:
-#          context: .
-#          file: ./Dockerfile
-#          push: true
-#          tags: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.image-tag.outputs.IMAGE_TAG }}
 
   check_file_formatting:
     name: Check file formatting
@@ -77,8 +77,7 @@ jobs:
       - name: Run unit tests
         env:
           IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
-        run: echo tak!
-        # run: docker compose up wewu-less-unit-tests --exit-code-from=wewu-less-unit-tests
+        run: docker compose up wewu-less-unit-tests --exit-code-from=wewu-less-unit-tests
 
   deploy:
     name: Deploy Terraform
