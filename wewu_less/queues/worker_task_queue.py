@@ -8,8 +8,8 @@ from wewu_less.models.worker_monitor_task import WorkerMonitorTaskModel
 from wewu_less.schemas.worker_monitor_task import WorkerMonitorTaskSchema
 
 worker_task_topic_name = "projects/{project_id}/topics/{topic}".format(
-    project_id=os.getenv("GOOGLE_CLOUD_PROJECT"),
-    topic=os.getenv("GOOGLE_WORKER_QUEUE_TOPIC"),
+    project_id=os.environ["GOOGLE_CLOUD_PROJECT"],
+    topic=os.environ["GOOGLE_WORKER_QUEUE_TOPIC"],
 )
 
 worker_task_schema = WorkerMonitorTaskSchema()
