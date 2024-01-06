@@ -9,6 +9,7 @@ class JobModel:
     service_url: str
     poll_frequency_secs: int
     alerting_window: int
-    altering_window_fail_count: int
+    alerting_window_fail_count: int
     ack_timeout: int
     is_cancelled: bool
+    expiration_timestamp: int | None
