@@ -8,7 +8,7 @@ jobs:
     name: Build and Push
     runs-on: ubuntu-latest
     outputs:
-      image-tag: ${{ steps.image-tag.output.IMAGE_TAG }}
+      image_tag: ${{ steps.image-tag.outputs.IMAGE_TAG }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
       - name: Set Docker image tag
         id: image-tag
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
           REPOSITORY_NAME: ${{ github.event.repository.name }}
           COMMIT_SHA: ${{ github.sha }}
         run: echo "IMAGE_TAG=${DOCKERHUB_USERNAME}/${REPOSITORY_NAME}:${COMMIT_SHA}" >> "$GITHUB_OUTPUT"
@@ -24,7 +24,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
@@ -34,6 +34,27 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+
+  run_unit_tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    needs: [build_and_push]
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Run unit tests
+        env:
+          IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
+        run: |
+          echo IMAGE NAME TO $IMAGE_NAME
+          docker compose up wewu-less-unit-tests
 
 
   build_and_test:

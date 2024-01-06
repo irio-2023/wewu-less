@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   wewu-less-unit-tests:
-    image: wewu-less-app
+    image: ${IMAGE_NAME}
     entrypoint:
       - poetry
       - run
