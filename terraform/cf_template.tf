@@ -1,7 +1,7 @@
 resource "google_cloudfunctions2_function" "cf_template" {
   for_each = local.functions
   name = each.key
-  project = "wewu-410223"
+  project = local.gcp_project
 
   build_config {
     runtime = "python312"
@@ -24,7 +24,8 @@ resource "google_cloudfunctions2_function" "cf_template" {
       each.value.environment,
       {
         SOURCES_MD5 = google_storage_bucket_object.wewu_less_sources.md5hash
-      }
+      },
+      local.common_environment
     )
 
     available_memory = each.value.memory

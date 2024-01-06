@@ -24,6 +24,14 @@ class WeWuLogger:
         kwargs["message"] = message
         self._prepare_exc_info(kwargs)
 
+        sets_to_convert = [
+            (key, list(value))
+            for key, value in kwargs.items()
+            if isinstance(value, set)
+        ]
+        for key, new_value in sets_to_convert:
+            kwargs[key] = new_value
+
     def info(self, message: str, **kwargs):
         self._prepare_kwargs(message, kwargs)
         self.logger.log_struct(kwargs, severity="INFO")

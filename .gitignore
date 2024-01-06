@@ -11,3 +11,10 @@
 
 # Build stuff
 cloud_platform/
+
+# Pytest stuff
+**/__pycache__/
+
+# Personal stuff
+/mongo.pass
+/requirements.txt

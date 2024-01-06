@@ -18,7 +18,7 @@ resource "random_id" "wewu_less_bucket_id" {
 }
 
 resource "google_storage_bucket" "wewu_less" {
-  project = "wewu-410223"
+  project = local.gcp_project
   name = "${random_id.wewu_less_bucket_id.hex}-gcf-source"
   location = "US"
   uniform_bucket_level_access = true
