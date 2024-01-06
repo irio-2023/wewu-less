@@ -30,7 +30,6 @@ def test_should_handle_camelcase_keys():
     deserialized_dict = schema.load(task_dict)
     deserialized_task = WorkerMonitorTaskModel(**deserialized_dict)
 
-    assert False
     assert deserialized_task == task
 
 

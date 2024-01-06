@@ -54,21 +54,25 @@ jobs:
           IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
         run: docker compose up wewu-less-unit-tests --exit-code-from=wewu-less-unit-tests
 
-
-  build_and_test:
-    name: Build & Test
+  deploy:
+    name: Deploy Terraform
     runs-on: ubuntu-latest
+    needs: [run_unit_tests]
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-          architecture: "x64"
+      - name: Create deploy directory
+        run: mkdir -p cloud_platform/wewu_less
 
-      - name: Set up Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3
-          poetry --version
+      - name: Generate requirements.txt file
+        run: poetry export -f requirements.txt --output cloud_platform/requirements.txt
+
+      - name: Copy source files
+        run: cp wewu_less/handlers cloud_platform/wewu_less
+
+      - name: Copy whole project to cloud functions scope
+        run: cp -r wewu_less cloud_platform/wewu_less/handlers
+
+      - name: Create zip with cloud functions
+        run: zip -r cloud_platform/wewu_less.zip cloud_platform/wewu_less cloud_platform/requirements.txt
