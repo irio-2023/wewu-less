@@ -5,12 +5,16 @@ terraform {
       version = "5.1.0"
     }
   }
+
+  backend "gcs" {
+    bucket = "wewu-less-state"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {
   project = "wewu_less"
   region = local.region
-  credentials = file("/Users/pfuchs/.config/gcloud/application_default_credentials.json")
 }
 
 resource "random_id" "wewu_less_bucket_id" {
@@ -18,15 +22,15 @@ resource "random_id" "wewu_less_bucket_id" {
 }
 
 resource "google_storage_bucket" "wewu_less" {
-  project = "wewu-410223"
+  project = local.gcp_project
   name = "${random_id.wewu_less_bucket_id.hex}-gcf-source"
   location = "US"
   uniform_bucket_level_access = true
 }
 
 resource "google_storage_bucket_object" "wewu_less_sources" {
-  source = "${path.module}/cloud_platform/wewu_less.zip"
-  name = "wewu_less_sources.zip"
+  source = local.source_code_path
+  name = "$wewu_less_sources-${local.source_code_hash}.zip"
   bucket = google_storage_bucket.wewu_less.name
 }
 
