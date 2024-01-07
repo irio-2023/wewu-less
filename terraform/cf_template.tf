@@ -23,7 +23,7 @@ resource "google_cloudfunctions2_function" "cf_template" {
     environment_variables = merge(
       each.value.environment,
       {
-        SOURCES_MD5 = google_storage_bucket_object.wewu_less_sources.md5hash
+        LAMBDA_IDENTIFIER = each.key
       },
       local.common_environment
     )

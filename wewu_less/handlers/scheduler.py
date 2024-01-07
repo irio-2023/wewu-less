@@ -1,8 +1,10 @@
 import datetime
+from typing import Iterable
+from uuid import UUID
 
 import flask
 
-from wewu_less.logging import WeWuLogger
+from wewu_less.logging import get_logger
 from wewu_less.models.worker_monitor_task import WorkerMonitorTaskModel
 from wewu_less.queues.publisher import publisher
 from wewu_less.queues.worker_task_queue import WorkerTaskQueue
@@ -12,7 +14,7 @@ from wewu_less.utils import wewu_cloud_function
 
 job_repository = JobRepository(mongo_client)
 worker_task_queue = WorkerTaskQueue(publisher)
-logger = WeWuLogger()
+logger = get_logger()
 
 WORKER_TIME_QUANT_SECS = 45 * 60
 
@@ -39,9 +41,11 @@ def wewu_scheduler(_: flask.Request):
     logger.info("Finished publishing messages", task_count=len(scheduled_worker_tasks))
 
     try:
-        updated_jobs = [str(task.job_id) for task in scheduled_worker_tasks]
-        if updated_jobs:
-            job_repository.update_expiration_date(updated_jobs, expiration_timestamp)
+        updated_job_ids: Iterable[UUID] = map(
+            lambda worker_task: worker_task.job_id, scheduled_worker_tasks
+        )
+        if scheduled_worker_tasks:
+            job_repository.update_expiration_date(updated_job_ids, expiration_timestamp)
     except Exception:
         scheduled_ids = {task.job_id for task in scheduled_worker_tasks}
         logger.exception(

@@ -3,7 +3,7 @@ from concurrent import futures
 
 from google.cloud.pubsub import PublisherClient
 
-from wewu_less.logging import WeWuLogger
+from wewu_less.logging import get_logger
 from wewu_less.models.worker_monitor_task import WorkerMonitorTaskModel
 from wewu_less.schemas.worker_monitor_task import WorkerMonitorTaskSchema
 
@@ -13,7 +13,7 @@ worker_task_topic_name = "projects/{project_id}/topics/{topic}".format(
 )
 
 worker_task_schema = WorkerMonitorTaskSchema()
-logger = WeWuLogger()
+logger = get_logger()
 
 
 class WorkerTaskQueue:
