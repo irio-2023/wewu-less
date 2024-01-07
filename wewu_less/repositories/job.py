@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+from typing import Iterable
+from uuid import UUID
 
 from bson import ObjectId
 from pymongo import MongoClient
@@ -42,10 +44,15 @@ class JobRepository:
 
         return list(map(self._mongo_to_model, mongo_job_iterable))
 
-    def update_expiration_date(self, job_ids: list[str], expiration_threshold: int):
+    def update_expiration_date(
+        self, job_ids: Iterable[UUID], expiration_threshold: int
+    ):
+        job_ids = [str(job_id) for job_id in job_ids]
         query = {"_id": {"$in": job_ids}}
 
         new_values = {
-            "expirationTimestamp": self._get_current_time() + expiration_threshold
+            "$set": {
+                "expirationTimestamp": self._get_current_time() + expiration_threshold
+            }
         }
         self.jobs.update_many(query, new_values)

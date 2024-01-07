@@ -941,6 +941,37 @@ files = [
 pyasn1 = ">=0.1.3"
 
 [[package]]
+name = "structlog"
+version = "23.3.0"
+description = "Structured Logging for Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "structlog-23.3.0-py3-none-any.whl", hash = "sha256:d6922a88ceabef5b13b9eda9c4043624924f60edbb00397f4d193bd754cde60a"},
+    {file = "structlog-23.3.0.tar.gz", hash = "sha256:24b42b914ac6bc4a4e6f716e82ac70d7fb1e8c3b1035a765591953bfc37101a5"},
+]
+
+[package.extras]
+dev = ["structlog[tests,typing]"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "sphinxext-opengraph", "twisted"]
+tests = ["freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "simplejson"]
+typing = ["mypy (>=1.4)", "rich", "twisted"]
+
+[[package]]
+name = "structlog-gcp"
+version = "0.2.3"
+description = "A structlog set of processors to output as Google Cloud Logging format"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "structlog_gcp-0.2.3-py3-none-any.whl", hash = "sha256:25816945c907fab32a57e5f14d22d665cec0ff27e7136d5755614043ae370df3"},
+    {file = "structlog_gcp-0.2.3.tar.gz", hash = "sha256:5ae3411e77ecf3e11cf53d157ed90fd945a15c7e3eeacbfa4f94d45c91906bfc"},
+]
+
+[package.dependencies]
+structlog = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -1041,4 +1072,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "d94aed9007f8c96aa7c5debbb8f2cfe337e37effd5d1a2882e3f2811306619cd"
+content-hash = "e564049721820cf4a362dd8858a12b4958a1de2e7c0fe6d11ebde255ae87dcea"
