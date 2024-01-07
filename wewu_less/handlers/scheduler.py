@@ -25,7 +25,7 @@ def wewu_scheduler(_: flask.Request):
         expired_jobs = job_repository.get_expired_jobs()
     except Exception:
         logger.exception("Could not retrieve expired jobs")
-        return 500
+        return {}, 500
 
     expiration_timestamp = (
         int(datetime.datetime.now(datetime.timezone.utc).timestamp())
@@ -53,6 +53,6 @@ def wewu_scheduler(_: flask.Request):
             impacted_job_count=len(scheduled_ids),
             impacted_job_ids=scheduled_ids,
         )
-        return 500
+        return {}, 500
 
-    return 200
+    return {}, 200

@@ -12,7 +12,7 @@ def wewu_cloud_function(fn):
     def wewu_cloud_function_wrapper(*args, **kwargs):
         structlog.contextvars.clear_contextvars()
         lambda_identifier = os.getenv("LAMBDA_IDENTIFIER", None)
-        structlog.contextvars.bind_contextvars(handler_name=lambda_identifier)
+        structlog.contextvars.bind_contextvars(function_name=lambda_identifier)
         try:
             result = fn(*args, **kwargs)
             return result
