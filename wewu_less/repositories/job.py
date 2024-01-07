@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 from typing import Iterable
 from uuid import UUID
 
-from bson import ObjectId
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
@@ -37,10 +36,7 @@ class JobRepository:
             "isCancelled": False,
         }
 
-        mongo_job_iterable = list(self.jobs.find(mongo_query))
-        for mongo_job in mongo_job_iterable:
-            object_id: ObjectId = mongo_job["_id"]
-            mongo_job["_id"] = str(object_id)
+        mongo_job_iterable = self.jobs.find(mongo_query)
 
         return list(map(self._mongo_to_model, mongo_job_iterable))
 
@@ -48,7 +44,7 @@ class JobRepository:
         self, job_ids: Iterable[UUID], expiration_threshold: int
     ):
         job_ids = [str(job_id) for job_id in job_ids]
-        query = {"_id": {"$in": job_ids}}
+        query = {"jobId": {"$in": job_ids}}
 
         new_values = {
             "$set": {

@@ -1,8 +1,10 @@
-from marshmallow import Schema, fields
+from marshmallow import EXCLUDE, Schema, fields
 
 
 class JobSchema(Schema):
-    _id = fields.String()
+    class Meta:
+        unknown = EXCLUDE
+
     job_id = fields.UUID(data_key="jobId")
     service_url = fields.Url(data_key="serviceUrl")
     poll_frequency_secs = fields.Integer(data_key="pollFrequencySecs")

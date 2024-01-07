@@ -4,7 +4,6 @@ from uuid import UUID
 
 @dataclass
 class JobModel:
-    _id: str | None
     job_id: UUID
     service_url: str
     poll_frequency_secs: int
