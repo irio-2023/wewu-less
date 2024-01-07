@@ -1,5 +1,4 @@
 import datetime
-from typing import Iterable
 from uuid import UUID
 
 import flask
@@ -41,10 +40,13 @@ def wewu_scheduler(_: flask.Request):
     logger.info("Finished publishing messages", task_count=len(scheduled_worker_tasks))
 
     try:
-        updated_job_ids: Iterable[UUID] = map(
-            lambda worker_task: worker_task.job_id, scheduled_worker_tasks
+        updated_job_ids: list[UUID] = list(
+            map(lambda worker_task: worker_task.job_id, scheduled_worker_tasks)
         )
-        if scheduled_worker_tasks:
+        if updated_job_ids:
+            logger.info(
+                "Updating expiration date of jobs", job_count=len(updated_job_ids)
+            )
             job_repository.update_expiration_date(updated_job_ids, expiration_timestamp)
     except Exception:
         scheduled_ids = {task.job_id for task in scheduled_worker_tasks}
