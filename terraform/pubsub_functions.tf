@@ -28,5 +28,23 @@ locals {
         WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic
       }
     }
+    wewu_notifier = {
+      source = "wewu_less/handlers/notifier.py"
+      handler = "wewu_notifier"
+
+      memory = "256M"
+      timeout_seconds = 60
+
+      environment = {
+        WEWU_CLOUD_TASKS_QUEUE_NAME = google_cloud_tasks_queue.notifier_cloud_tasks_queue.name
+        WEWU_CLOUD_TASKS_QUEUE_REGION = google_cloud_tasks_queue.notifier_cloud_tasks_queue.location
+        WEWU_CLOUD_TASKS_QUEUE_PROJECT = google_cloud_tasks_queue.notifier_cloud_tasks_queue.project
+        WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC = local.queues.send_notification_event_queue.top
+        NOTIFICATION_URL = "https://api.wewu.io/notify"
+        SERVICE_MAIL = "wewu.alert.inator@gmail.com"
+        MAIL_API_KEY = var.MAIL_API_KEY
+        MAIL_API_SECRET = var.MAIL_API_SECRET_KEY
+      }
+    }
   }
 }

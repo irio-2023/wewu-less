@@ -1,17 +1,17 @@
-import uuid
 from dataclasses import dataclass
+from uuid import UUID
 
 from wewu_less.models.service_admin import ServiceAdmin
 
 
 @dataclass
-class SendNotificationEvent:
-    notification_id: uuid.UUID
-    job_id: uuid.UUID
-    primary_admin: ServiceAdmin
-    secondary_admin: ServiceAdmin
-    ack_timeout_secs: int
-    escalation_number: int
+class NotificationEntity:
+    notificationId: UUID
+    jobId: UUID
+    primaryAdmin: ServiceAdmin
+    secondaryAdmin: ServiceAdmin
+    ackTimeoutSecs: int
+    acked: bool
 
     def __post_init__(self):
         if isinstance(self.primary_admin, dict):
