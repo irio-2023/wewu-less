@@ -1,5 +1,5 @@
-resource "google_cloudfunctions2_function" "cf_template" {
-  for_each = local.functions
+resource "google_cloudfunctions2_function" "http_cf_template" {
+  for_each = local.http_functions
   name = each.key
   project = local.gcp_project
 
@@ -28,8 +28,17 @@ resource "google_cloudfunctions2_function" "cf_template" {
       local.common_environment
     )
 
+    ingress_settings = "ALLOW_INTERNAL_ONLY"
+    all_traffic_on_latest_revision = true
     available_memory = each.value.memory
-    timeout_seconds = 60
+    timeout_seconds = each.value.timeout_seconds
+  }
+
+  event_trigger {
+    trigger_region = local.region
+    event_type = "google.cloud.pubsub.topic.v1.messagePublished"
+    pubsub_topic = each.trigger_topic
+    retry_policy = each.auto_retry ? "RETRY_POLICY_RETRY" : "RETRY_POLICY_DO_NOT_RETRY"
   }
 
   location = local.region

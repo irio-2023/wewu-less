@@ -14,6 +14,9 @@ jobs:
       - name: Checkout current repository
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Set Docker image tag
         id: image-tag
         env:
@@ -40,6 +43,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+          cache-from: type=registry,ref=wewu-less/app:latest
+          cache-to: type=inline
 
   check_file_formatting:
     name: Check file formatting

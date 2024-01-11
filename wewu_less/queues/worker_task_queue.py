@@ -5,6 +5,7 @@ from google.cloud.pubsub import PublisherClient
 
 from wewu_less.logging import get_logger
 from wewu_less.models.worker_monitor_task import WorkerMonitorTaskModel
+from wewu_less.queues.publisher import publisher
 from wewu_less.schemas.worker_monitor_task import WorkerMonitorTaskSchema
 
 worker_task_topic_name = "projects/{project_id}/topics/{topic}".format(
@@ -17,10 +18,10 @@ logger = get_logger()
 
 
 class WorkerTaskQueue:
-    publisher: PublisherClient
+    _publisher_client: PublisherClient
 
-    def __init__(self, publisher: PublisherClient):
-        self.publisher = publisher
+    def __init__(self, publisher_client: PublisherClient = publisher):
+        self._publisher_client = publisher_client
 
     def publish_tasks(
         self, worker_tasks: list[WorkerMonitorTaskModel]
@@ -30,7 +31,7 @@ class WorkerTaskQueue:
 
         for worker_task in worker_tasks:
             message_str = worker_task_schema.dumps(worker_task)
-            future = self.publisher.publish(
+            future = self._publisher_client.publish(
                 worker_task_topic_name, str.encode(message_str)
             )
             publish_futures.append(future)
