@@ -43,7 +43,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.image-tag.outputs.IMAGE_TAG }}
-          cache-from: type=registry,ref=wewu-less/app:latest
+          cache-from: type=registry,ref=${{ steps.image-tag.outputs.IMAGE_TAG }}
           cache-to: type=inline
 
   check_file_formatting:
