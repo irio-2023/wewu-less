@@ -1,5 +1,5 @@
-resource "google_cloudfunctions2_function" "http_cf_template" {
-  for_each = local.http_functions
+resource "google_cloudfunctions2_function" "pubsub_cf_template" {
+  for_each = local.pubsub_functions
   name = each.key
   project = local.gcp_project
 
@@ -37,8 +37,8 @@ resource "google_cloudfunctions2_function" "http_cf_template" {
   event_trigger {
     trigger_region = local.region
     event_type = "google.cloud.pubsub.topic.v1.messagePublished"
-    pubsub_topic = each.trigger_topic
-    retry_policy = each.auto_retry ? "RETRY_POLICY_RETRY" : "RETRY_POLICY_DO_NOT_RETRY"
+    pubsub_topic = each.value.trigger_topic
+    retry_policy = each.value.retry_policy ? "RETRY_POLICY_RETRY" : "RETRY_POLICY_DO_NOT_RETRY"
   }
 
   location = local.region
