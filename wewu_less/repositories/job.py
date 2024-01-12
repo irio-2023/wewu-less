@@ -44,7 +44,7 @@ class JobRepository:
 
     def save_new_job(self, job: JobModel):
         job_dict = dataclasses.asdict(job)
-        self.jobs.insert_one(job_dict)
+        self.jobs.insert_one(job_schema.dump(job_dict))
 
     def update_expiration_date(
         self, job_ids: Iterable[UUID], expiration_threshold: int
