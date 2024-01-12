@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import flask
 
-from tests.unit.utils import make_request_from_json_str
+from tests.unit.utils import make_event_from_json_str, make_request_from_json_str
 from wewu_less.handlers.entry import (
     wewu_api_copy_and_paste_inator,
     wewu_api_register_service,
@@ -89,7 +89,7 @@ def test_copy_and_paste_inator_should_save_message_into_database():
             "wewu_less.repositories.job.JobRepository.save_new_job", save_new_job_mock
         )
     ):
-        wewu_api_copy_and_paste_inator(json.loads(raw_request))
+        wewu_api_copy_and_paste_inator(make_event_from_json_str(raw_request))
 
     job_model = JobModel(
         job_id=request_model.job_id,

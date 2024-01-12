@@ -17,7 +17,6 @@ google-cloud-pubsub = "^2.19.0"
 functions-framework = "^3.5.0"
 structlog = "^23.3.0"
 structlog-gcp = "^0.2.3"
-pyjwt = "^2.8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.4"

@@ -2,15 +2,13 @@ from dataclasses import dataclass
 from typing import List
 from uuid import UUID
 
-from marshmallow.fields import URL
-
 from wewu_less.models.geo_region import GeoRegion
 from wewu_less.models.service_admin import ServiceAdmin
 
 
 @dataclass
 class RegisterServiceRequest:
-    service_url: URL
+    service_url: str
     geo_regions: List[GeoRegion]
     primary_admin: ServiceAdmin
     secondary_admin: ServiceAdmin
