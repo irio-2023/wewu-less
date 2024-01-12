@@ -1,11 +1,14 @@
 import uuid
 
+from wewu_less.logging import get_logger
 from wewu_less.models.job import JobModel
 from wewu_less.models.register_request import RegisterServiceRequest
 from wewu_less.queues.register_task_queue import RegisterServiceTaskQueue
 from wewu_less.repositories.job import JobRepository
 from wewu_less.schemas.register_request import RegisterServiceRequestSchema
 from wewu_less.utils import wewu_event_cloud_function, wewu_json_http_cloud_function
+
+logger = get_logger()
 
 job_repository = JobRepository()
 register_task_queue = RegisterServiceTaskQueue()
@@ -30,6 +33,7 @@ def wewu_api_register_service(request_json: dict):
 
 @wewu_event_cloud_function
 def wewu_api_copy_and_paste_inator(event: dict):
+    logger.info("Processing event", processed_event=event)
     parsed_body = register_service_request_schema.load(event)
     job = JobModel.from_register_service_request(parsed_body)
 
