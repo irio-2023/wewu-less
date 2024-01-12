@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 
 from wewu_less.models.job import JobModel
+from wewu_less.repositories.database import mongo_client as _mongo_client
 from wewu_less.schemas.job import JobSchema
 
 job_schema = JobSchema()
@@ -14,8 +15,8 @@ job_schema = JobSchema()
 class JobRepository:
     jobs: Collection
 
-    def __init__(self, client: MongoClient):
-        self.jobs = client.job_database.jobs
+    def __init__(self, mongo_client: MongoClient = _mongo_client):
+        self.jobs = mongo_client.job_database.jobs
 
     @staticmethod
     def _mongo_to_model(mongo_job: dict) -> JobModel:
@@ -39,6 +40,9 @@ class JobRepository:
         mongo_job_iterable = self.jobs.find(mongo_query)
 
         return list(map(self._mongo_to_model, mongo_job_iterable))
+
+    def save_new_job(self, job: JobModel):
+        self.jobs.insert_one(job_schema.dump(job))
 
     def update_expiration_date(
         self, job_ids: Iterable[UUID], expiration_threshold: int

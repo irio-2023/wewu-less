@@ -1,5 +1,5 @@
-resource "google_cloudfunctions2_function" "cf_template" {
-  for_each = local.functions
+resource "google_cloudfunctions2_function" "http_cf_template" {
+  for_each = local.http_functions
   name = each.key
   project = local.gcp_project
 
@@ -29,7 +29,7 @@ resource "google_cloudfunctions2_function" "cf_template" {
     )
 
     available_memory = each.value.memory
-    timeout_seconds = 60
+    timeout_seconds = each.value.timeout_seconds
   }
 
   location = local.region
