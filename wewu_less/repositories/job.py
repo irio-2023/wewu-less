@@ -1,4 +1,3 @@
-import dataclasses
 from datetime import datetime, timezone
 from typing import Iterable
 from uuid import UUID
@@ -43,8 +42,7 @@ class JobRepository:
         return list(map(self._mongo_to_model, mongo_job_iterable))
 
     def save_new_job(self, job: JobModel):
-        job_dict = dataclasses.asdict(job)
-        self.jobs.insert_one(job_schema.dump(job_dict))
+        self.jobs.insert_one(job_schema.dump(job))
 
     def update_expiration_date(
         self, job_ids: Iterable[UUID], expiration_threshold: int

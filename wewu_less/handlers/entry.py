@@ -27,13 +27,15 @@ def wewu_api_register_service(request_json: dict):
 
     request = RegisterServiceRequest(**parsed_body)
     register_task_queue.publish_tasks([request])
+    logger.info(
+        "Successfully pushed register service request onto Pub/Sub", job_id=job_id
+    )
 
     return {"jobId": str(job_id)}, 200
 
 
 @wewu_event_cloud_function
 def wewu_api_copy_and_paste_inator(event: dict):
-    logger.info("Processing event", processed_event=event)
     parsed_body = register_service_request_schema.load(event)
     job = JobModel.from_register_service_request(parsed_body)
 
@@ -41,3 +43,4 @@ def wewu_api_copy_and_paste_inator(event: dict):
     # ADD MULTI REGIONAL SCHEDULING IN PRODUCTION MODE
 
     job_repository.save_new_job(job)
+    logger.info("Successfully added job to the database", job_id=job.job_id)
