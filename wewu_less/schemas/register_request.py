@@ -7,11 +7,12 @@ possible_regions = [r.value for r in GeoRegion]
 
 
 class RegisterServiceRequestSchema(Schema):
+    job_id = fields.UUID(required=True, data_key="jobId")
     service_url = fields.Url(required=True, data_key="serviceURL")
     geo_regions = fields.List(
         cls_or_instance=fields.Str(validate=validate.OneOf(possible_regions)),
         required=True,
-        data_key="GeoRegions",
+        data_key="geoRegions",
     )
     primary_admin = fields.Nested(
         ServiceAdminSchema, required=True, data_key="primaryAdmin"

@@ -17,13 +17,7 @@ def wewu_cloud_function(fn):
         structlog.contextvars.clear_contextvars()
         lambda_identifier = os.getenv("LAMBDA_IDENTIFIER", None)
         structlog.contextvars.bind_contextvars(function_name=lambda_identifier)
-        try:
-            result = fn(*args, **kwargs)
-            return result
-        except ValidationError as ve:
-            return ve.messages_dict, 400
-        except Exception as e:
-            return str(e), 500
+        return fn(*args, **kwargs)
 
     return wewu_cloud_function_wrapper
 
@@ -35,17 +29,28 @@ def wewu_json_http_cloud_function(fn, accepts_body=True):
         if content_header != "application/json":
             return NON_JSON_ERROR
 
-        if accepts_body:
-            request_json: dict = request.get_json(silent=True)
-            if not request_json:
-                return "Invalid body", 400
+        try:
+            if accepts_body:
+                request_json: dict = request.get_json(silent=True)
+                if not request_json:
+                    return "Invalid body, it needs to be valid JSON", 400
 
-            response = fn(request_json)
-        else:
-            response = fn()
+                response = fn(request_json)
+            else:
+                response = fn()
+        except ValidationError as ve:
+            return ve.messages_dict, 400
+        except Exception:
+            logger.exception(
+                "Uncaught exception in handler",
+            )
+            return {}, 500
 
         if response is None:
             response = {}, 200
+        elif isinstance(response, dict):
+            response = response, 200
+
         return response
 
     return wewu_cloud_function(wewu_json_http_cloud_function_wrapper)

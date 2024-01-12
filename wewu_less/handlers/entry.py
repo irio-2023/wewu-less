@@ -1,3 +1,5 @@
+import uuid
+
 from cloudevents.http import CloudEvent
 
 from wewu_less.models.job import JobModel
@@ -9,19 +11,28 @@ from wewu_less.utils import wewu_event_cloud_function, wewu_json_http_cloud_func
 
 job_repository = JobRepository()
 register_task_queue = RegisterServiceTaskQueue()
+register_service_request_schema_without_id = RegisterServiceRequestSchema(
+    exclude=("job_id",)
+)
 register_service_request_schema = RegisterServiceRequestSchema()
 
 
 @wewu_json_http_cloud_function
 def wewu_api_register_service(request_json: dict):
-    parsed_body = register_service_request_schema.load(request_json)
+    parsed_body = register_service_request_schema_without_id.load(request_json)
+
+    job_id = uuid.uuid4()
+    parsed_body["job_id"] = job_id
+
     request = RegisterServiceRequest(**parsed_body)
     register_task_queue.publish_tasks([request])
+
+    return {"jobId": str(job_id)}, 200
 
 
 @wewu_event_cloud_function
 def wewu_api_copy_and_paste_inator(event: CloudEvent):
-    parsed_body = register_service_request_schema.load(event.get_data())
+    parsed_body = register_service_request_schema.loads(event.get_data())
     job = JobModel.from_register_service_request(parsed_body)
 
     # THIS IS ONLY FOR PURPOSE OF IRIO's SEMESTER PROJECT, REMOVE IN PRODUCTION

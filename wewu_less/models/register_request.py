@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from uuid import UUID
 
 from marshmallow.fields import URL
 
@@ -17,6 +18,7 @@ class RegisterServiceRequest:
     alerting_window_size: int
     alerting_window_fail_count: int
     ack_timeout: int
+    job_id: UUID | None = None
 
     def __post_init__(self):
         self.geo_regions = [GeoRegion(g) for g in self.geo_regions]
