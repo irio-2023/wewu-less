@@ -32,7 +32,11 @@ class WewuQueue(ABC):
 
         for future, task in publish_futures_mappings:
             if err := future.exception():
-                raise err
+                logger.error(
+                    "Got exception while publishing task to the queue",
+                    topic=self._topic,
+                    exc_info=err,
+                )
             elif not future.cancelled():
                 published_tasks.append(task)
 
