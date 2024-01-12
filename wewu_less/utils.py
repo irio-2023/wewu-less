@@ -2,6 +2,7 @@ import os
 
 import flask
 import functions_framework
+import jwt
 import structlog
 from marshmallow import ValidationError
 
@@ -57,7 +58,15 @@ def wewu_json_http_cloud_function(fn, accepts_body=True):
 
 
 def wewu_event_cloud_function(fn):
-    def wewu_event_cloud_function_wrapper(event, *args, **kwargs):
+    def wewu_event_cloud_function_wrapper(jwt_event, *args, **kwargs):
+        try:
+            event = jwt.decode(jwt_event["data"])
+        except Exception:
+            logger.exception(
+                "Failed to deserialize JWT event in event-driven Cloud Function",
+                _event=jwt_event,
+            )
+            return
         return fn(event)
 
     return functions_framework.cloud_event(
