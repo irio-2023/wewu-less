@@ -15,8 +15,10 @@ class RegisterServiceTaskQueue(WewuQueue):
     def __init__(self, publisher_client: PublisherClient = publisher):
         super().__init__(publisher_client, register_service_task_topic_name)
 
-    def publish_tasks(self, messages: list[RegisterServiceRequest]):
+    def publish_tasks(
+        self, messages: list[RegisterServiceRequest]
+    ) -> list[RegisterServiceRequest]:
         byte_messages = [
-            register_service_request_schema.dumps(m).encode() for m in messages
+            (register_service_request_schema.dumps(m).encode(), m) for m in messages
         ]
-        super()._publish_messages(byte_messages)
+        return super()._publish_messages(byte_messages)

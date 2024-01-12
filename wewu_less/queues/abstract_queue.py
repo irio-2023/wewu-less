@@ -1,5 +1,6 @@
 from abc import ABC
 from concurrent import futures
+from typing import TypeVar
 
 from google.cloud.pubsub import PublisherClient
 
@@ -9,6 +10,7 @@ logger = get_logger()
 
 
 class WewuQueue(ABC):
+    T = TypeVar("T")
     _publisher_client: PublisherClient
     _topic: str
 
@@ -16,15 +18,15 @@ class WewuQueue(ABC):
         self._topic = topic
         self._publisher_client = publisher_client
 
-    def _publish_messages(self, messages: list[bytes]):
+    def _publish_messages(self, messages: list[tuple[bytes, T]]) -> list[T]:
         publish_futures = []
         publish_futures_mappings = []
 
-        for message_content in messages:
+        for message_content, original_object in messages:
             future = self._publisher_client.publish(self._topic, message_content)
 
             publish_futures.append(future)
-            publish_futures_mappings.append((future, message_content))
+            publish_futures_mappings.append((future, original_object))
 
         published_tasks = []
 

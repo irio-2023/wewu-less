@@ -15,6 +15,8 @@ class WorkerTaskQueue(WewuQueue):
     def __init__(self, publisher_client: PublisherClient = publisher):
         super().__init__(publisher_client, worker_task_topic_name)
 
-    def publish_tasks(self, messages: list[WorkerMonitorTaskModel]):
-        byte_messages = [worker_task_schema.dumps(m).encode() for m in messages]
-        super()._publish_messages(byte_messages)
+    def publish_tasks(
+        self, messages: list[WorkerMonitorTaskModel]
+    ) -> list[WorkerMonitorTaskModel]:
+        byte_messages = [(worker_task_schema.dumps(m).encode(), m) for m in messages]
+        return super()._publish_messages(byte_messages)
