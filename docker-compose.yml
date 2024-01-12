@@ -2,6 +2,8 @@ version: "3.7"
 services:
   wewu-less-unit-tests:
     image: ${IMAGE_NAME}
+    env_file:
+      - .env.ci
     entrypoint:
       - poetry
       - run
