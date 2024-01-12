@@ -158,6 +158,11 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Create empty zip file
+        run: |
+          mkdir cloud_platform
+          touch cloud_platform/wewu_less.zip
+
       - name: Copy terraform files
         run: cp -rf terraform/* .
 
