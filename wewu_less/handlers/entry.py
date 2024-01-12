@@ -1,7 +1,5 @@
 import uuid
 
-from cloudevents.http import CloudEvent
-
 from wewu_less.models.job import JobModel
 from wewu_less.models.register_request import RegisterServiceRequest
 from wewu_less.queues.register_task_queue import RegisterServiceTaskQueue
@@ -31,8 +29,8 @@ def wewu_api_register_service(request_json: dict):
 
 
 @wewu_event_cloud_function
-def wewu_api_copy_and_paste_inator(event: CloudEvent):
-    parsed_body = register_service_request_schema.loads(event.get_data())
+def wewu_api_copy_and_paste_inator(event: dict):
+    parsed_body = register_service_request_schema.load(event)
     job = JobModel.from_register_service_request(parsed_body)
 
     # THIS IS ONLY FOR PURPOSE OF IRIO's SEMESTER PROJECT, REMOVE IN PRODUCTION

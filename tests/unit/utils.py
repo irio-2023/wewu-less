@@ -2,7 +2,6 @@ import json
 from unittest.mock import MagicMock
 
 import flask
-from cloudevents.http import CloudEvent
 
 
 def make_request_from_json_str(body: str) -> flask.Request:
@@ -15,11 +14,3 @@ def make_request_from_json_str(body: str) -> flask.Request:
     request_mock.headers = {"content-type": "application/json"}
 
     return request_mock
-
-
-def make_event_from_str(body: str) -> CloudEvent:
-    event_mock = MagicMock()
-    get_data_mock = MagicMock(return_value=body)
-
-    event_mock.get_data = get_data_mock
-    return event_mock
