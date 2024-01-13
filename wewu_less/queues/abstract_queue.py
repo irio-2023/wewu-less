@@ -18,7 +18,9 @@ class WewuQueue(ABC):
         self._topic = topic
         self._publisher_client = publisher_client
 
-    def _publish_messages(self, messages: list[tuple[bytes, T]]) -> list[T]:
+    def _publish_messages(
+        self, messages: list[tuple[bytes, T]], should_throw: bool = False
+    ) -> list[T]:
         publish_futures = []
         publish_futures_mappings = []
 
@@ -39,6 +41,9 @@ class WewuQueue(ABC):
                     topic=self._topic,
                     exc_info=err,
                 )
+
+                if should_throw:
+                    raise err
             elif not future.cancelled():
                 published_tasks.append(task)
 

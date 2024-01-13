@@ -26,7 +26,8 @@ def wewu_api_register_service(request_json: dict):
     parsed_body["job_id"] = job_id
 
     request = RegisterServiceRequest(**parsed_body)
-    register_task_queue.publish_tasks([request])
+    register_task_queue.publish_tasks([request], should_throw=True)
+
     logger.info(
         "Successfully pushed register service request onto Pub/Sub", job_id=job_id
     )

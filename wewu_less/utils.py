@@ -46,7 +46,12 @@ def wewu_json_http_cloud_function(fn, accepts_body=True):
             logger.exception(
                 "Uncaught exception in handler",
             )
-            return {}, 500
+            return {
+                "error": None,
+                "message": "Server could not process the request because of "
+                "internal error. Please try again later of contact support "
+                "if that error persists.",
+            }, 500
 
         if response is None:
             response = {}, 200
