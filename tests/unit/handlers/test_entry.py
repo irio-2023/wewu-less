@@ -72,7 +72,7 @@ def test_should_publish_message_after_register_request():
         setattr(request_model, "job_id", DETERMINISTIC_UUID)
 
     assert register_response == ({"jobId": str(DETERMINISTIC_UUID)}, 200)
-    publish_tasks_mock.assert_called_once_with([request_model])
+    publish_tasks_mock.assert_called_once_with([request_model], should_throw=True)
 
 
 def test_copy_and_paste_inator_should_save_message_into_database():
