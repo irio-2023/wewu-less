@@ -18,6 +18,14 @@ locals {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
       }
     }
-
+    wewu_buzzator = {
+      source = "wewu_less/handlers/buzzator.py"
+      handler = "wewu_buzzator"
+      memory = "256M"
+      timeout_seconds = 60
+      environment = {
+        WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC = local.queues.send_notification_event_queue.topic
+      }
+    }
   }
 }
