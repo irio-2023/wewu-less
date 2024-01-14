@@ -40,7 +40,7 @@ def _group_monitor_result_by_job_id(
         else:
             yield chunk
             current_job_id = result.job_id
-            chunk = []
+            chunk = [result]
 
     if chunk:
         yield chunk
@@ -66,7 +66,7 @@ def _calculate_failing_jobs(relevant_jobs: List[JobModel]) -> List[Tuple[UUID, i
             continue
 
         # Initialize iteration variables
-        error_timestamp = chunk[job_window_size - 1].timestamp
+        error_timestamp = chunk[0].timestamp
         current_fail_count = 0
         for ping_result in chunk[:job_window_size]:
             if ping_result.result != PingResult.Success:
@@ -77,7 +77,7 @@ def _calculate_failing_jobs(relevant_jobs: List[JobModel]) -> List[Tuple[UUID, i
             continue
 
         for index, ping_result in enumerate(chunk[job_window_size:]):
-            error_timestamp = ping_result.timestamp
+            error_timestamp = chunk[index + 1].timestamp
             current_fail_count -= chunk[index].result != PingResult.Success
             current_fail_count += ping_result.result != PingResult.Success
 
