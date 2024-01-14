@@ -24,7 +24,11 @@ def wewu_cloud_function(fn):
     return wewu_cloud_function_wrapper
 
 
-def wewu_json_http_cloud_function(fn, accepts_body=True):
+def wewu_json_http_cloud_function(*args, accepts_body=True):
+    return lambda x: _wewu_json_http_cloud_function(x, accepts_body=accepts_body)
+
+
+def _wewu_json_http_cloud_function(fn, accepts_body):
     def wewu_json_http_cloud_function_wrapper(request: flask.Request, *args, **kwargs):
         content_header = request.headers["content-type"]
 

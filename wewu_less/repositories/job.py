@@ -7,6 +7,7 @@ from pymongo.collection import Collection
 
 from wewu_less.models.job import JobModel
 from wewu_less.repositories.database import mongo_client as _mongo_client
+from wewu_less.repositories.utils import sharding_step
 from wewu_less.schemas.job import JobSchema
 
 job_schema = JobSchema()
@@ -40,6 +41,11 @@ class JobRepository:
         mongo_job_iterable = self.jobs.find(mongo_query)
 
         return list(map(self._mongo_to_model, mongo_job_iterable))
+
+    def get_jobs_by_shard(self, shard: int) -> Iterable[JobModel]:
+        aggregation_query = [*sharding_step(shard)]
+
+        return map(self._mongo_to_model, self.jobs.aggregate(aggregation_query))
 
     def save_new_job(self, job: JobModel):
         self.jobs.insert_one(job_schema.dump(job))
