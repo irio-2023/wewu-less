@@ -16,8 +16,8 @@ logger = get_logger()
 WORKER_TIME_QUANT_SECS = 45 * 60
 
 
-@wewu_json_http_cloud_function
-def wewu_scheduler(_: dict):
+@wewu_json_http_cloud_function(accepts_body=False)
+def wewu_scheduler():
     try:
         expired_jobs = job_repository.get_expired_jobs()
     except Exception:

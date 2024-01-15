@@ -8,6 +8,10 @@ locals {
       name = "monitor-task-queue"
       message_retention = "86600s"
     }
+    send_notification_event_queue = {
+      name = "send-notification-event-queue"
+      message_retention = "86600s"
+    }
   }
 
   queues = { for k, v in local.terraform_queues :

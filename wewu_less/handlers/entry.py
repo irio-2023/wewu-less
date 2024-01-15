@@ -18,7 +18,7 @@ register_service_request_schema_without_id = RegisterServiceRequestSchema(
 register_service_request_schema = RegisterServiceRequestSchema()
 
 
-@wewu_json_http_cloud_function
+@wewu_json_http_cloud_function(accepts_body=True)
 def wewu_api_register_service(request_json: dict):
     parsed_body = register_service_request_schema_without_id.load(request_json)
 
