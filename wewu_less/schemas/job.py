@@ -16,8 +16,12 @@ class JobSchema(Schema):
         ServiceAdminSchema, required=True, data_key="secondaryAdmin"
     )
     poll_frequency_secs = fields.Integer(data_key="pollFrequencySecs")
-    alerting_window = fields.Integer(data_key="alertingWindow")
-    alerting_window_fail_count = fields.Integer(data_key="alertingWindowFailCount")
+    alerting_window_number_of_calls = fields.Integer(
+        data_key="alertingWindowNumberOfCalls"
+    )
+    alerting_window_calls_fail_count = fields.Integer(
+        data_key="alertingWindowCallsFailCount"
+    )
     ack_timeout = fields.Integer(data_key="ackTimeout")
     is_cancelled = fields.Boolean(data_key="isCancelled")
     expiration_timestamp = fields.Integer(
