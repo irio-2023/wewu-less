@@ -6,7 +6,7 @@ locals {
       memory = "256Mi"
       timeout_seconds = 60
       environment = {
-        WEWU_WORKER_QUEUE_TOPIC = local.queues.monitor_task_queue.topic
+        WEWU_WORKER_QUEUE_TOPIC = "projects/wewu-410223/topics/monitor-task-topic"
       }
     }
     wewu_api_register_service = {
