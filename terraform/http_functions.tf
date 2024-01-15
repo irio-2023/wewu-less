@@ -24,7 +24,7 @@ locals {
       memory = "128M"
       timeout_seconds = 3
       environment = {
-        WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_serivce_task_queue.topic
+        WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic
       }
     }
     wewu_buzzator = {
