@@ -1,6 +1,6 @@
 from marshmallow import EXCLUDE, Schema, fields
 
-from wewu_less.models.service_admin import ServiceAdmin
+from wewu_less.schemas.service_admin import ServiceAdminSchema
 
 
 class JobSchema(Schema):
@@ -9,9 +9,11 @@ class JobSchema(Schema):
 
     job_id = fields.UUID(data_key="jobId")
     service_url = fields.Url(data_key="serviceUrl")
-    primary_admin = fields.Nested(ServiceAdmin, required=True, data_key="primaryAdmin")
+    primary_admin = fields.Nested(
+        ServiceAdminSchema, required=True, data_key="primaryAdmin"
+    )
     secondary_admin = fields.Nested(
-        ServiceAdmin, required=True, data_key="secondaryAdmin"
+        ServiceAdminSchema, required=True, data_key="secondaryAdmin"
     )
     poll_frequency_secs = fields.Integer(data_key="pollFrequencySecs")
     alerting_window = fields.Integer(data_key="alertingWindow")
