@@ -4,6 +4,10 @@ locals {
       name = "register-service-task-queue"
       message_retention = "86600s"
     }
+    delete_service_task_queue = {
+      name = "delete-service-task-queue"
+      message_retention = "86600s"
+    }
     monitor_task_queue = {
       name = "monitor-task-queue"
       message_retention = "86600s"

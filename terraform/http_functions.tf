@@ -12,10 +12,19 @@ locals {
     wewu_api_register_service = {
       source = "wewu_less/handlers/entry.py"
       handler = "wewu_api_register_service"
-      memory = "256M"
+      memory = "128M"
       timeout_seconds = 3
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
+      }
+    }
+    wewu_api_delete_service = {
+      source = "wewu_less/handlers/entry.py"
+      handler = "wewu_api_delete_service"
+      memory = "128M"
+      timeout_seconds = 3
+      environment = {
+        WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_serivce_task_queue.topic
       }
     }
     wewu_buzzator = {
