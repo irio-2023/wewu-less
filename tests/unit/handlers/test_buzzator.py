@@ -34,7 +34,6 @@ def ping_fixtures(
     for index, result in enumerate(mapped_pattern):
         monitor_results.append(
             MonitorResult(
-                id=uuid.uuid4(),
                 job_id=job_id,
                 timestamp=(
                     start_timestamp + (len(mapped_pattern) - 1 - index) * TIMESTAMP_STEP
