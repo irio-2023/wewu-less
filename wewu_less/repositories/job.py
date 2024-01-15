@@ -58,7 +58,7 @@ class JobRepository:
     def get_jobs_by_shard(self, shard: int) -> Iterable[JobModel]:
         aggregation_query = [
             *sharding_step(shard),
-            {"$sort": {"jobId": 0, "timestamp": -1}},
+            {"$sort": {"jobId": -1}},
         ]
 
         return map(self._mongo_to_model, self.jobs.aggregate(aggregation_query))
