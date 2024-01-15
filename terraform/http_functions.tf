@@ -32,8 +32,8 @@ locals {
     wewu_buzzator = {
       source = "wewu_less/handlers/buzzator.py"
       handler = "wewu_buzzator"
-      memory = "256Mi"
-      timeout_seconds = 60
+      memory = "1024Mi"
+      timeout_seconds = 120
       environment = {
         WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC = local.queues.send_notification_event_queue.topic
       }
