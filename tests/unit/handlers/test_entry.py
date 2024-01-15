@@ -25,8 +25,8 @@ def _get_example_register_request(
         "primaryAdmin": {"email": "abc@wp.pl"},
         "secondaryAdmin": {"phoneNumber": "123456789"},
         "pollFrequencySecs": 23,
-        "alertingWindowSize": 52,
-        "alertingWindowFailCount": 12,
+        "alertingWindowNumberOfCalls": 52,
+        "alertingWindowCallsFailCount": 12,
         "ackTimeout": 36,
     }
 
@@ -43,8 +43,8 @@ def _get_example_register_request(
         primary_admin=primary_admin,
         secondary_admin=second_admin,
         poll_frequency_secs=23,
-        alerting_window_size=52,
-        alerting_window_fail_count=12,
+        alerting_window_number_of_calls=52,
+        alerting_window_calls_fail_count=12,
         ack_timeout=36,
     )
 
@@ -97,8 +97,8 @@ def test_copy_and_paste_inator_should_save_message_into_database():
         primary_admin=request_model.primary_admin,
         secondary_admin=request_model.secondary_admin,
         poll_frequency_secs=request_model.poll_frequency_secs,
-        alerting_window_size=request_model.alerting_window_size,
-        alerting_window_fail_count=request_model.alerting_window_fail_count,
+        alerting_window_number_of_calls=request_model.alerting_window_number_of_calls,
+        alerting_window_calls_fail_count=request_model.alerting_window_calls_fail_count,
         ack_timeout=request_model.ack_timeout,
         is_cancelled=False,
     )

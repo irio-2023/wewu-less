@@ -47,12 +47,14 @@ def ping_fixtures(
 
 
 def job_fixture(
-    job_id: UUID, alerting_window_size: int, alerting_window_fail_count: int
+    job_id: UUID,
+    alerting_window_number_of_calls: int,
+    alerting_window_calls_fail_count: int,
 ) -> JobModel:
     return JobModel(
         job_id=job_id,
-        alerting_window_size=alerting_window_size,
-        alerting_window_fail_count=alerting_window_fail_count,
+        alerting_window_number_of_calls=alerting_window_number_of_calls,
+        alerting_window_calls_fail_count=alerting_window_calls_fail_count,
         primary_admin=None,
         secondary_admin=None,
         poll_frequency_secs=None,
