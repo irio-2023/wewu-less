@@ -12,4 +12,6 @@ class JobSchema(Schema):
     alerting_window_fail_count = fields.Integer(data_key="alertingWindowFailCount")
     ack_timeout = fields.Integer(data_key="ackTimeout")
     is_cancelled = fields.Boolean(data_key="isCancelled")
-    expiration_timestamp = fields.Integer(data_key="expirationTimestamp")
+    expiration_timestamp = fields.Integer(
+        data_key="expirationTimestamp", allow_none=True, default=None, required=False
+    )

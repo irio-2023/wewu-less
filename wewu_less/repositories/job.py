@@ -36,8 +36,19 @@ class JobRepository:
 
     def get_expired_jobs(self) -> list[JobModel]:
         mongo_query = {
-            "expirationTimestamp": {"$lte": self._get_current_time()},
-            "isCancelled": False,
+            "$and": [
+                {"isCancelled": False},
+                {
+                    "$or": [
+                        {
+                            "expirationTimestamp": {
+                                "$lte": self._get_current_time(),
+                            },
+                        },
+                        {"expirationTimestamp": None},
+                    ]
+                },
+            ],
         }
 
         mongo_job_iterable = self.jobs.find(mongo_query)
