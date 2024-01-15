@@ -4,7 +4,7 @@ locals {
       source = "wewu_less/handlers/entry.py"
       handler = "wewu_api_copy_and_paste_inator"
 
-      memory = "128Mi"
+      memory = "256Mi"
       timeout_seconds = 60
 
       trigger_topic = local.queues.register_service_task_queue.topic
@@ -18,7 +18,7 @@ locals {
       source = "wewu_less/handlers/entry.py"
       handler = "wewu_api_delete_and_paste_inator"
 
-      memory = "128Mi"
+      memory = "256Mi"
       timeout_seconds = 60
 
       trigger_topic = local.queues.delete_service_task_queue.topic
