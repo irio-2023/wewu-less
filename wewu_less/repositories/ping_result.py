@@ -1,5 +1,4 @@
-from typing import Iterable, Tuple
-from uuid import UUID
+from typing import Iterable
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -25,14 +24,11 @@ class PingResultRepository:
         self.ping_results = mongo_client.job_database.monitor_result
 
     def get_pings_to_check(self, shard: int) -> Iterable[MonitorResult]:
-        aggregation_query = [*sharding_step(shard)]
+        aggregation_query = [
+            {"$sort": {"jobId": -1, "timestamp": -1}},
+            *sharding_step(shard),
+        ]
 
-        results = list(
-            map(_parse_monitor_result, self.ping_results.aggregate(aggregation_query))
+        return map(
+            _parse_monitor_result, self.ping_results.aggregate(aggregation_query)
         )
-
-        def get_key(x: MonitorResult) -> Tuple[UUID, int]:
-            return x.job_id, x.timestamp
-
-        results.sort(key=get_key, reverse=True)
-        return results
