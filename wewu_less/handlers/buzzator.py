@@ -50,8 +50,8 @@ def _calculate_failing_jobs(relevant_jobs: List[JobModel]) -> List[Tuple[UUID, i
     pings_to_check = monitor_result_repository.get_pings_to_check(CURRENT_SHARD)
     job_window_map = {
         relevant_job.job_id: (
-            relevant_job.alerting_window_size,
-            relevant_job.alerting_window_fail_count,
+            relevant_job.alerting_window_number_of_calls,
+            relevant_job.alerting_window_calls_fail_count,
         )
         for relevant_job in relevant_jobs
     }

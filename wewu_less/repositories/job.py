@@ -36,8 +36,19 @@ class JobRepository:
 
     def get_expired_jobs(self) -> list[JobModel]:
         mongo_query = {
-            "expirationTimestamp": {"$lte": self._get_current_time()},
-            "isCancelled": False,
+            "$and": [
+                {"isCancelled": False},
+                {
+                    "$or": [
+                        {
+                            "expirationTimestamp": {
+                                "$lte": self._get_current_time(),
+                            },
+                        },
+                        {"expirationTimestamp": None},
+                    ]
+                },
+            ],
         }
 
         mongo_job_iterable = self.jobs.find(mongo_query)
@@ -45,7 +56,10 @@ class JobRepository:
         return list(map(self._mongo_to_model, mongo_job_iterable))
 
     def get_jobs_by_shard(self, shard: int) -> Iterable[JobModel]:
-        aggregation_query = [*sharding_step(shard)]
+        aggregation_query = [
+            *sharding_step(shard),
+            {"$sort": {"jobId": -1}},
+        ]
 
         return map(self._mongo_to_model, self.jobs.aggregate(aggregation_query))
 

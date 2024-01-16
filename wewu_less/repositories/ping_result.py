@@ -25,9 +25,10 @@ class PingResultRepository:
 
     def get_pings_to_check(self, shard: int) -> Iterable[MonitorResult]:
         aggregation_query = [
+            {"$sort": {"jobId": -1, "timestamp": -1}},
             *sharding_step(shard),
-            {"$sort": {"timestamp": -1, "jobId": -1}},
         ]
 
-        results = self.ping_results.aggregate(aggregation_query)
-        return map(_parse_monitor_result, results)
+        return map(
+            _parse_monitor_result, self.ping_results.aggregate(aggregation_query)
+        )

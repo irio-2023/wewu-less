@@ -13,8 +13,8 @@ class RegisterServiceRequest:
     primary_admin: ServiceAdmin
     secondary_admin: ServiceAdmin
     poll_frequency_secs: int
-    alerting_window_size: int
-    alerting_window_fail_count: int
+    alerting_window_number_of_calls: int
+    alerting_window_calls_fail_count: int
     ack_timeout: int
     job_id: UUID | None = None
 

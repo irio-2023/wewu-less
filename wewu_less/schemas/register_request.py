@@ -21,8 +21,10 @@ class RegisterServiceRequestSchema(Schema):
         ServiceAdminSchema, required=True, data_key="secondaryAdmin"
     )
     poll_frequency_secs = fields.Integer(required=True, data_key="pollFrequencySecs")
-    alerting_window_size = fields.Integer(required=True, data_key="alertingWindowSize")
-    alerting_window_fail_count = fields.Integer(
-        required=True, data_key="alertingWindowFailCount"
+    alerting_window_number_of_calls = fields.Integer(
+        required=True, data_key="alertingWindowNumberOfCalls"
+    )
+    alerting_window_calls_fail_count = fields.Integer(
+        required=True, data_key="alertingWindowCallsFailCount"
     )
     ack_timeout = fields.Integer(required=True, data_key="ackTimeout")

@@ -34,7 +34,6 @@ def ping_fixtures(
     for index, result in enumerate(mapped_pattern):
         monitor_results.append(
             MonitorResult(
-                id=uuid.uuid4(),
                 job_id=job_id,
                 timestamp=(
                     start_timestamp + (len(mapped_pattern) - 1 - index) * TIMESTAMP_STEP
@@ -47,12 +46,14 @@ def ping_fixtures(
 
 
 def job_fixture(
-    job_id: UUID, alerting_window_size: int, alerting_window_fail_count: int
+    job_id: UUID,
+    alerting_window_number_of_calls: int,
+    alerting_window_calls_fail_count: int,
 ) -> JobModel:
     return JobModel(
         job_id=job_id,
-        alerting_window_size=alerting_window_size,
-        alerting_window_fail_count=alerting_window_fail_count,
+        alerting_window_number_of_calls=alerting_window_number_of_calls,
+        alerting_window_calls_fail_count=alerting_window_calls_fail_count,
         primary_admin=None,
         secondary_admin=None,
         poll_frequency_secs=None,

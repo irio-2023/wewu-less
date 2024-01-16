@@ -6,7 +6,6 @@ from wewu_less.models.ping_result import PingResult
 
 @dataclass
 class MonitorResult:
-    id: UUID
     job_id: UUID
     timestamp: int
     result: PingResult
