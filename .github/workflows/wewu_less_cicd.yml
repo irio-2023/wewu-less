@@ -84,6 +84,11 @@ jobs:
           IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
         run: docker compose up wewu-less-unit-tests --exit-code-from=wewu-less-unit-tests
 
+      - name: Get rid of the containers
+        env:
+          IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
+        run: docker compose down
+
   run_integration_tests:
     name: Run integration tests
     runs-on: ubuntu-latest
@@ -102,6 +107,11 @@ jobs:
         env:
           IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
         run: docker compose up wewu-less-integration-tests --exit-code-from=wewu-less-integration-tests
+
+      - name: Get rid of the containers
+        env:
+          IMAGE_NAME: ${{ needs.build_and_push.outputs.image_tag }}
+        run: docker compose down
 
   deploy:
     name: Deploy Terraform

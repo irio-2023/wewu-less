@@ -21,11 +21,28 @@ def jobs_collection():
     jobs_collection.drop()
 
 
-def job_fixture(job_id: UUID, jobs_collection: Optional[Collection] = None) -> JobModel:
+@pytest.fixture
+def monitor_results_collection():
+    monitor_result: Collection = mongo_client.job_database.monitor_result
+    yield monitor_result
+    monitor_result.drop()
+
+
+def job_fixture(
+    job_id: UUID,
+    jobs_collection: Optional[Collection] = None,
+    alerting_window_number_of_calls: Optional[int] = None,
+    alerting_window_calls_fail_count: Optional[int] = None,
+) -> JobModel:
     job_request = create_job_request(job_id)
     model = JobModel.from_register_service_request(
         register_service_schema.load(job_request)
     )
+
+    if alerting_window_number_of_calls is not None:
+        model.alerting_window_number_of_calls = alerting_window_number_of_calls
+    if alerting_window_calls_fail_count is not None:
+        model.alerting_window_calls_fail_count = alerting_window_calls_fail_count
 
     job_dict = job_schema.dump(model)
 

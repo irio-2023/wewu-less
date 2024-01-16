@@ -30,10 +30,10 @@ def wewu_json_http_cloud_function(*args, accepts_body=True):
 
 def _wewu_json_http_cloud_function(fn, accepts_body):
     def wewu_json_http_cloud_function_wrapper(request: flask.Request, *args, **kwargs):
-        content_header = request.headers["content-type"]
-
-        if content_header != "application/json":
-            return NON_JSON_ERROR
+        if accepts_body:
+            content_header = request.headers["content-type"]
+            if content_header != "application/json":
+                return NON_JSON_ERROR
 
         try:
             if accepts_body:

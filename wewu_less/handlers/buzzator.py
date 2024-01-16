@@ -83,7 +83,7 @@ def _calculate_failing_jobs(relevant_jobs: List[JobModel]) -> List[Tuple[UUID, i
 
             if current_fail_count >= job_fail_count:
                 failing_jobs.append((job_id, error_timestamp))
-                continue
+                break
 
     return failing_jobs
 
@@ -127,7 +127,10 @@ def _update_last_notification_entities(processed_failing_jobs: List[Tuple[UUID, 
         for job_id, last_ping_timestamp in processed_failing_jobs
     ]
 
-    last_notification_repository.upsert_last_notifications(last_notification_entities)
+    if last_notification_entities:
+        last_notification_repository.upsert_last_notifications(
+            last_notification_entities
+        )
 
 
 @wewu_json_http_cloud_function(accepts_body=False)
