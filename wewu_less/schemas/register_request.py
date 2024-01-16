@@ -8,7 +8,7 @@ possible_regions = [r.value for r in GeoRegion]
 
 class RegisterServiceRequestSchema(Schema):
     job_id = fields.UUID(required=True, data_key="jobId")
-    service_url = fields.Url(required=True, data_key="serviceURL")
+    service_url = fields.Url(required=True, data_key="serviceUrl")
     geo_regions = fields.List(
         cls_or_instance=fields.Str(validate=validate.OneOf(possible_regions)),
         required=True,
