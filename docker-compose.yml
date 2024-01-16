@@ -28,6 +28,7 @@ services:
 
   mongo:
     image: mongo:latest
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: wewu
       MONGO_INITDB_ROOT_PASSWORD: wewu
