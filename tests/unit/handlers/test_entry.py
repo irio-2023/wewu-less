@@ -20,7 +20,7 @@ def _get_example_register_request(
     return_raw_json=False, include_job_id=False
 ) -> (flask.Request | str, RegisterServiceRequest):
     request_json_object = {
-        "serviceURL": "https://google.com",
+        "serviceUrl": "https://google.com",
         "geoRegions": ["europe-central2-a"],
         "primaryAdmin": {"email": "abc@wp.pl"},
         "secondaryAdmin": {"phoneNumber": "123456789"},
