@@ -386,6 +386,23 @@ protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4
 libcst = ["libcst (>=0.3.10)"]
 
 [[package]]
+name = "google-cloud-tasks"
+version = "2.15.0"
+description = "Google Cloud Tasks API client library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "google-cloud-tasks-2.15.0.tar.gz", hash = "sha256:4a99938db0111d55378641b5235b98e6bd764bc8e2a7e24df706f8b863bdf27c"},
+    {file = "google_cloud_tasks-2.15.0-py2.py3-none-any.whl", hash = "sha256:06e2b616ae65256e2fc5da1bb9755417b801172a49c6432a79212ff83dd48ddb"},
+]
+
+[package.dependencies]
+google-api-core = {version = ">=1.34.0,<2.0.dev0 || >=2.11.dev0,<3.0.0dev", extras = ["grpc"]}
+grpc-google-iam-v1 = ">=0.12.4,<1.0.0dev"
+proto-plus = ">=1.22.3,<2.0.0dev"
+protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<5.0.0dev"
+
+[[package]]
 name = "googleapis-common-protos"
 version = "1.62.0"
 description = "Common protobufs used in Google APIs"
@@ -1086,4 +1103,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "087768f81545009b77a075aa256834c07d8895ae98c816460aa109296201240c"
+content-hash = "0a5a6ebc3ccc906ec6880bbbed1f2c166ee8a67832e029b1d54cd83dd935a162"
