@@ -140,6 +140,11 @@ def wewu_buzzator():
     relevant_jobs = list(job_repository.get_jobs_by_shard(CURRENT_SHARD))
     failing_jobs = _calculate_failing_jobs(relevant_jobs)
 
+    logger.info(
+        "Buzzator finish calculation of failing jobs",
+        failing_job_count=len(failing_jobs),
+    )
+
     last_notification_timestamp_map = {
         last_notification.job_id: last_notification.last_processed_ping_timestamp
         for last_notification in last_notification_repository.get_last_notifications_by_shard(
@@ -152,6 +157,10 @@ def wewu_buzzator():
         if last_notification_timestamp_map.get(job_id, 0) < last_ping_timestamp
     ]
 
+    logger.info(
+        "Buzzator filtered failing jobs", failing_job_count=len(filtered_failing_jobs)
+    )
+
     processed_failing_jobs = _publish_send_notification_events(
         filtered_failing_jobs, relevant_jobs
     )
@@ -161,6 +170,11 @@ def wewu_buzzator():
             "Failed publishing some of the notification events",
             failed_count=failed_count,
         )
+
+    logger.info(
+        "Buzzator finished pushing new tasks",
+        published_job_count=len(processed_failing_jobs),
+    )
 
     _update_last_notification_entities(processed_failing_jobs)
 

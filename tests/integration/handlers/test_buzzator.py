@@ -56,7 +56,9 @@ def ping_fixtures(
 
 
 def test_buzzator_alerting_on_one_failing_service(
-    monitor_results_collection: Collection, jobs_collection: Collection
+    monitor_results_collection: Collection,
+    jobs_collection: Collection,
+    last_notification_collection,
 ):
     notifications_interceptor = MagicMock()
     notifications_interceptor.side_effect = lambda x: x
@@ -103,7 +105,9 @@ def test_buzzator_alerting_on_one_failing_service(
 
 
 def test_buzzator_alerting_on_two_services_one_healthy_one_failing(
-    monitor_results_collection: Collection, jobs_collection: Collection
+    monitor_results_collection: Collection,
+    jobs_collection: Collection,
+    last_notification_collection,
 ):
     notifications_interceptor = MagicMock()
 
