@@ -35,6 +35,8 @@ locals {
       memory = "256M"
       timeout_seconds = 60
 
+      trigger_topic = local.queues.send_notification_event_queue.topic
+      retry_policy = true
       environment = {
         WEWU_CLOUD_TASKS_QUEUE_NAME = google_cloud_tasks_queue.notifier_cloud_tasks_queue.name
         WEWU_CLOUD_TASKS_QUEUE_REGION = google_cloud_tasks_queue.notifier_cloud_tasks_queue.location
