@@ -1,5 +1,5 @@
 resource "google_cloud_tasks_queue" "notifier_cloud_tasks_queue" {
-  name = "notifier_cloud_tasks_queue"
+  name = "notifier-cloud-tasks-queue"
   location = local.region
   project = local.gcp_project
 
