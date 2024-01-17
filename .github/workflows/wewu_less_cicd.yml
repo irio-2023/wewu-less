@@ -123,6 +123,8 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/deploy')
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      TF_VAR_MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
+      TF_VAR_MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
@@ -179,8 +181,8 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/destroy')
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
-      MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
+      TF_VAR_MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
+      TF_VAR_MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
@@ -201,4 +203,4 @@ jobs:
         run: terraform init
 
       - name: Apply terraform
-        run: TR_VAR_MAIL_API_KEY=$MAIL_API_KEY TR_VAR_MAIL_SECRET_API_KEY=$MAIL_API_SECRET_KEY terraform apply -destroy -auto-approve -parallelism=5
+        run: terraform apply -destroy -auto-approve -parallelism=5
