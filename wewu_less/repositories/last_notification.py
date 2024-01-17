@@ -42,6 +42,7 @@ class LastNotificationRepository:
                         "lastProcessedPingTimestamp": last_notification.last_processed_ping_timestamp,
                     }
                 },
+                upsert=True,
             )
             for last_notification in last_notifications
         ]
