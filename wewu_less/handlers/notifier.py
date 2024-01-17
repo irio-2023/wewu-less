@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 
 from cloudevents.http import CloudEvent
 from google.cloud import tasks_v2
-from googleapiclient.errors import HttpError
 from mailjet_rest import Client
 
 from wewu_less.logging import get_logger
@@ -71,8 +70,8 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
         client.create_task(request=task_request)
     except Exception:
         logger.exception(
-            "Failed to schedule secondary admin notification"
-            "(notificationId: {notification_event.notification_id})"
+            f"Failed to schedule secondary admin notification"
+            f"(notificationId: {notification_event.notification_id})"
         )
         raise
 
@@ -106,7 +105,7 @@ def notify_second_admin(notification_event: SendNotificationEvent):
 def send_to_admin(notification_event: SendNotificationEvent, admin: ServiceAdmin):
     if admin.email:
         logger.info(
-            "Sending email to {admin.email} (notificationId: {notification_event.notification_id})"
+            f"Sending email to {admin.email} (notificationId: {notification_event.notification_id})"
         )
         send_email(notification_event, admin.email)
     else:
@@ -126,9 +125,13 @@ def send_email(notification_event: SendNotificationEvent, email: str):
         }
         result = mailjet.send.create(data=data)
         if result.status_code != 200:
-            raise HttpError(result.status_code, result.text)
-    except HttpError:
-        logger.exception("Failed to send mail to {email}: {error}")
+            raise Exception(result.status_code, result.text)
+    except Exception:
+        logger.exception(
+            "Failed to send mail",
+            mail=email,
+            notification_id=notification_event.notification_id,
+        )
         raise
 
 
