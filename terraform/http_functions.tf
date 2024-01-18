@@ -38,5 +38,12 @@ locals {
         WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC = local.queues.send_notification_event_queue.topic
       }
     }
+    wewu_tester = {
+      source = "wewu_less/handlers/tester.py"
+      handler = "wewu_tester"
+      memory = "256Mi"
+      timeout_seconds = 15
+      environment = {}
+    }
   }
 }
