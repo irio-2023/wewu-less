@@ -23,5 +23,7 @@ def wewu_tester(request: flask.Request):
     elif request.method == "POST":
         body = request.get_json()
         new_status_code = body["status_code"]
-        tester_client_collection.update_many({}, {"status_code": int(new_status_code)})
+        tester_client_collection.update_many(
+            {}, {"status_code": int(new_status_code)}, upsert=True
+        )
         return 200
