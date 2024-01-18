@@ -23,7 +23,7 @@ service_mail = os.environ["SERVICE_MAIL"]
 mail_api_key = os.environ["MAIL_API_KEY"]
 mail_api_secret = os.environ["MAIL_API_SECRET"]
 queue_name = os.environ["WEWU_CLOUD_TASKS_QUEUE_NAME"]
-queue_location = os.environ["WEWU_CLOUD_TASKS_QUEUE_LOCATION"]
+queue_location = os.environ["WEWU_CLOUD_TASKS_QUEUE_REGION"]
 queue_project = os.environ["WEWU_CLOUD_TASKS_QUEUE_PROJECT"]
 
 queue_path = tasks_v2.CloudTasksClient.queue_path(
