@@ -1,5 +1,10 @@
+resource "random_string" "random" {
+  length           = 16
+  special          = false
+}
+
 resource "google_cloud_tasks_queue" "notifier_cloud_tasks_queue" {
-  name = "notifier-cloud-tasks-queue"
+  name = random_string.random.result
   location = local.region
   project = local.gcp_project
 
