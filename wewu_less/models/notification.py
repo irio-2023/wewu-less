@@ -14,7 +14,7 @@ class NotificationEntity:
     acked: bool
 
     def __post_init__(self):
-        if isinstance(self.primary_admin, dict):
-            self.primary_admin = ServiceAdmin(**self.primary_admin)
-        if isinstance(self.secondary_admin, dict):
-            self.secondary_admin = ServiceAdmin(**self.secondary_admin)
+        if isinstance(self.primaryAdmin, dict):
+            self.primaryAdmin = ServiceAdmin(**self.primaryAdmin)
+        if isinstance(self.secondaryAdmin, dict):
+            self.secondaryAdmin = ServiceAdmin(**self.secondaryAdmin)

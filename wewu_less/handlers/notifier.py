@@ -12,9 +12,10 @@ from wewu_less.models.notification import NotificationEntity
 from wewu_less.models.send_notification_event import SendNotificationEvent
 from wewu_less.models.service_admin import ServiceAdmin
 from wewu_less.repositories.database import mongo_client
+from wewu_less.repositories.notification import NotificationRepository
+from wewu_less.schemas.notification import NotificationSchema
 from wewu_less.schemas.send_notification_event import SendNotificationEventSchema
 from wewu_less.utils import wewu_cloud_function
-from wewu_less.repositories.notification import NotificationRepository
 
 logger = get_logger()
 
@@ -32,8 +33,10 @@ queue_path = tasks_v2.CloudTasksClient.queue_path(
 )
 
 send_notification_event_schema = SendNotificationEventSchema()
+notification_schema = NotificationSchema()
 
 notification_repository = NotificationRepository(mongo_client)
+
 
 @wewu_cloud_function
 def wewu_notifier(cloud_event: CloudEvent):
@@ -61,27 +64,36 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
             "body": payload.encode(),
             "headers": {"Content-Type": "application/json"},
         },
-        "schedule_time": (
-            datetime.utcnow() + timedelta(seconds=notification_event.ack_timeout_secs)
-        ).isoformat()
-        + "Z",
+        "schedule_time": datetime.utcnow()
+        + timedelta(seconds=notification_event.ack_timeout_secs),
     }
     task_request = {"parent": queue_path, "task": task}
 
     try:
         client.create_task(request=task_request)
     except Exception:
-        logger.exception(
-            f"Failed to schedule secondary admin notification"
-            f"(notificationId: {notification_event.notification_id})"
-        )
+        logger.exception("Failed to schedule secondary admin notification")
         raise
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:
-    notification_data = notification_repository.get_notification_by_id(notification_id) 
-    notification = NotificationEntity(**notification_data)
+    notification = notification_repository.get_notification_by_id(notification_id)
+    if notification is None:
+        logger.error("Notification not found", notification_id=notification_id)
+        raise Exception
     return notification.acked
+
+
+def add_notification(notification_event: SendNotificationEvent):
+    notification = NotificationEntity(
+        notificationId=notification_event.notification_id,
+        jobId=notification_event.job_id,
+        primaryAdmin=notification_event.primary_admin,
+        secondaryAdmin=notification_event.secondary_admin,
+        ackTimeoutSecs=notification_event.ack_timeout_secs,
+        acked=False,
+    )
+    notification_repository.insert_notification(notification)
 
 
 def notify_first_admin(notification_event: SendNotificationEvent):
@@ -89,8 +101,8 @@ def notify_first_admin(notification_event: SendNotificationEvent):
     second_notification_event = dataclasses.replace(
         notification_event, escalation_number=1
     )
+    add_notification(notification_event)
     publish_pubsub_with_delay(second_notification_event)
-    notification_repository.insert_notification(notification_event)
     send_to_admin(notification_event, notification_event.primary_admin)
 
 
@@ -103,7 +115,9 @@ def notify_second_admin(notification_event: SendNotificationEvent):
 def send_to_admin(notification_event: SendNotificationEvent, admin: ServiceAdmin):
     if admin.email:
         logger.info(
-            f"Sending email to {admin.email} (notificationId: {notification_event.notification_id})"
+            "Sending email to admin",
+            mail=admin.email,
+            notification_id=notification_event.notification_id,
         )
         send_email(notification_event, admin.email)
     else:
