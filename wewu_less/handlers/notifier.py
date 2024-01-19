@@ -14,6 +14,7 @@ from wewu_less.models.service_admin import ServiceAdmin
 from wewu_less.repositories.database import mongo_client
 from wewu_less.schemas.send_notification_event import SendNotificationEventSchema
 from wewu_less.utils import wewu_cloud_function
+from wewu_less.repositories.notification import NotificationRepository
 
 logger = get_logger()
 
@@ -29,8 +30,10 @@ queue_project = os.environ["WEWU_CLOUD_TASKS_QUEUE_PROJECT"]
 queue_path = tasks_v2.CloudTasksClient.queue_path(
     queue_project, queue_location, queue_name
 )
+
 send_notification_event_schema = SendNotificationEventSchema()
 
+notification_repository = NotificationRepository(mongo_client)
 
 @wewu_cloud_function
 def wewu_notifier(cloud_event: CloudEvent):
@@ -38,7 +41,6 @@ def wewu_notifier(cloud_event: CloudEvent):
         cloud_event.get_data()
     )
     notification_event = SendNotificationEvent(**notification_event_parsed)
-
     if notification_event.escalation_number == 0:
         notify_first_admin(notification_event)
     else:
@@ -77,9 +79,7 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:
-    notification_data = mongo_client.notification_database.notifications.find_one(
-        {"notificationId": notification_id}
-    )
+    notification_data = notification_repository.get_notification_by_id(notification_id) 
     notification = NotificationEntity(**notification_data)
     return notification.acked
 
@@ -90,9 +90,7 @@ def notify_first_admin(notification_event: SendNotificationEvent):
         notification_event, escalation_number=1
     )
     publish_pubsub_with_delay(second_notification_event)
-    mongo_client.notification_database.notifications.insert_one(
-        send_notification_event_schema.dump(notification_event)
-    )
+    notification_repository.insert_notification(notification_event)
     send_to_admin(notification_event, notification_event.primary_admin)
 
 
