@@ -1,5 +1,4 @@
 import dataclasses
-import os
 import uuid
 from datetime import datetime, timedelta, timezone
 
@@ -16,8 +15,6 @@ from wewu_less.schemas.send_notification_event import SendNotificationEventSchem
 from wewu_less.utils import wewu_event_cloud_function
 
 logger = get_logger()
-
-notify_topic = os.environ["WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC"]
 
 send_notification_event_schema = SendNotificationEventSchema()
 notification_schema = NotificationSchema()
@@ -41,11 +38,7 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
         seconds=notification_event.ack_timeout_secs
     )
     payload = send_notification_event_schema.dumps(notification_event)
-    queue.publish_task(
-        url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish",
-        payload=payload,
-        schedule_time=schedule_time,
-    )
+    queue.publish_on_notifier_topic(payload, schedule_time)
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:

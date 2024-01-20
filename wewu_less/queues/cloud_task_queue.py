@@ -14,6 +14,8 @@ default_queue_path = tasks_v2.CloudTasksClient.queue_path(
 
 logger = get_logger()
 
+notify_topic = os.environ["WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC"]
+
 
 class CloudTaskQueue:
     def __init__(
@@ -21,6 +23,13 @@ class CloudTaskQueue:
     ):
         self.client = client
         self.queue_path = queue_path
+
+    def publish_on_notifier_topic(self, payload, schedule_time):
+        self.publish_task(
+            url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish",
+            payload=payload,
+            schedule_time=schedule_time,
+        )
 
     def publish_task(self, url, payload, schedule_time):
         task = {
