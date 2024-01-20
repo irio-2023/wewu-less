@@ -43,8 +43,12 @@ def test_wewu_notifier_primary_admin():
     notification = NotificationEntity(
         notification_id=TEST_UUID,
         job_id=JOB_UUID,
-        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
-        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        primary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))
+        ),
+        secondary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))
+        ),
         ack_timeout_secs=event["ackTimeoutSecs"],
         acked=False,
     )
@@ -94,8 +98,12 @@ def test_wewu_notifier_secondary_admin_not_acked():
     notification = NotificationEntity(
         notification_id=TEST_UUID,
         job_id=JOB_UUID,
-        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
-        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        primary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))
+        ),
+        secondary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))
+        ),
         ack_timeout_secs=event["ackTimeoutSecs"],
         acked=False,
     )
@@ -142,8 +150,12 @@ def test_wewu_notifier_secondary_admin_acked():
     notification = NotificationEntity(
         notification_id=TEST_UUID,
         job_id=JOB_UUID,
-        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
-        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        primary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))
+        ),
+        secondary_admin=ServiceAdmin(
+            **ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))
+        ),
         ack_timeout_secs=event["ackTimeoutSecs"],
         acked=True,
     )
