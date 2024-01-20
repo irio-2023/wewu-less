@@ -1,6 +1,6 @@
 import dataclasses
-import uuid
 import json
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from wewu_less.clients.email_client import EmailClient
