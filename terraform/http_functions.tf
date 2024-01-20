@@ -54,7 +54,7 @@ locals {
   }
 }
 
-resource "google_cloudfunctions_function_iam_member" "invoker" {
+resource "google_cloudfunctions_function_iam_member" "wewu_api_register_service_member" {
   project = local.google_cloudfunctions2_function.http_cf_template.project
   region = local.google_cloudfunctions2_function.http_cf_template.region
   cloud_function = "wewu_api_register_service"
@@ -63,7 +63,7 @@ resource "google_cloudfunctions_function_iam_member" "invoker" {
   member = "allUsers"
 }
 
-resource "google_cloudfunctions_function_iam_member" "invoker" {
+resource "google_cloudfunctions_function_iam_member" "wewu_api_delete_service_member" {
   project = local.google_cloudfunctions2_function.http_cf_template.project
   region = local.google_cloudfunctions2_function.http_cf_template.region
   cloud_function = "wewu_api_delete_service"
