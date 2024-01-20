@@ -28,7 +28,7 @@ locals {
       memory = "256Mi"
       timeout_seconds = 3
 
-      policy_data = data.google_iam_policy.noauth.policy_data
+      policy_data = data.google_cloudfunctions_iam_policy.noauth.policy_data
 
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
@@ -52,4 +52,22 @@ locals {
       environment = {}
     }
   }
+}
+
+data "wewu_api_register_iam_member" "invoker" {
+  project = local.http_functions.wewu_api_register_service.project
+  region = local.http_functions.wewu_api_register_service.region
+  function_name = local.http_functions.wewu_api_register_service.name
+
+  role = "roles/cloudfunctions.invoker"
+  member = "allUsers"
+}
+
+data "wewu_api_delete_iam_member" "invoker" {
+  project = local.http_functions.wewu_api_delete_service.project
+  region = local.http_functions.wewu_api_delete_service.region
+  function_name = local.http_functions.wewu_api_delete_service.name
+
+  role = "roles/cloudfunctions.invoker"
+  member = "allUsers"
 }
