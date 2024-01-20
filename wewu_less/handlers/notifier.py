@@ -1,5 +1,6 @@
 import dataclasses
 import uuid
+import json
 from datetime import datetime, timedelta, timezone
 
 from wewu_less.clients.email_client import EmailClient
@@ -37,8 +38,15 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
     schedule_time = datetime.now(timezone.utc) + timedelta(
         seconds=notification_event.ack_timeout_secs
     )
-    payload = send_notification_event_schema.dumps(notification_event)
-    queue.publish_on_notifier_topic(payload, schedule_time)
+    json_notification_event = send_notification_event_schema.dumps(notification_event)
+    payload = {
+        "messages": [
+            {
+                "data": json_notification_event,
+            }
+        ]
+    }
+    queue.publish_on_notifier_topic(json.dumps(payload), schedule_time)
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:

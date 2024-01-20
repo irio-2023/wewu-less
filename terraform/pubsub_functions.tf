@@ -46,6 +46,8 @@ locals {
         SERVICE_MAIL = "wewu.alert.inator@gmail.com"
         MAIL_API_KEY = var.MAIL_API_KEY
         MAIL_API_SECRET = var.MAIL_API_SECRET_KEY
+        WEWU_PUBSUB_HTTP_KEY = var.WEWU_PUBSUB_HTTP_KEY
+        WEWU_SERVICE_ACCOUNT_EMAIL = var.WEWU_SERVICE_ACCOUNT_EMAIL
       }
     }
   }
