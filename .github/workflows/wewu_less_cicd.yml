@@ -202,8 +202,5 @@ jobs:
       - name: Init terraform
         run: terraform init
 
-      - name: remove lock
-        run: terraform force-unlock -force 1705769900789067
-
       - name: Apply terraform
         run: terraform apply -destroy -auto-approve -parallelism=5
