@@ -51,11 +51,11 @@ def notification_acked(notification_id: uuid.UUID) -> bool:
 
 def add_notification(notification_event: SendNotificationEvent):
     notification = NotificationEntity(
-        notificationId=notification_event.notification_id,
-        jobId=notification_event.job_id,
-        primaryAdmin=notification_event.primary_admin,
-        secondaryAdmin=notification_event.secondary_admin,
-        ackTimeoutSecs=notification_event.ack_timeout_secs,
+        notification_id=notification_event.notification_id,
+        job_id=notification_event.job_id,
+        primary_admin=notification_event.primary_admin,
+        secondary_admin=notification_event.secondary_admin,
+        ack_timeout_secs=notification_event.ack_timeout_secs,
         acked=False,
     )
     notification_repository.insert_notification(notification)

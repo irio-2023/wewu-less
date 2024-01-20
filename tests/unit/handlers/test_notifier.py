@@ -7,6 +7,9 @@ from requests import Response
 from tests.unit.utils import make_event_from_json_str
 from wewu_less.handlers.notifier import wewu_notifier
 from wewu_less.models.notification import NotificationEntity
+from wewu_less.models.service_admin import ServiceAdmin
+from wewu_less.schemas.notification import NotificationSchema
+from wewu_less.schemas.service_admin import ServiceAdminSchema
 
 JOB_UUID = uuid.uuid4()
 TEST_UUID = uuid.uuid4()
@@ -38,11 +41,11 @@ def test_wewu_notifier_primary_admin():
     event = _get_example_notify_task(True)
 
     notification = NotificationEntity(
-        notificationId=TEST_UUID,
-        jobId=JOB_UUID,
-        primaryAdmin=event["primaryAdmin"],
-        secondaryAdmin=event["secondaryAdmin"],
-        ackTimeoutSecs=event["ackTimeoutSecs"],
+        notification_id=TEST_UUID,
+        job_id=JOB_UUID,
+        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
+        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        ack_timeout_secs=event["ackTimeoutSecs"],
         acked=False,
     )
 
@@ -77,7 +80,10 @@ def test_wewu_notifier_primary_admin():
         wewu_notifier(event)
 
     mock_queue.assert_called_once()
+    print(mongo_mock_insert.call_args)
+    print(notification)
     mongo_mock_insert.assert_called_once_with(notification)
+    print(NotificationSchema().dump(notification))
     mongo_mock_find.assert_not_called()
     mailjet_mock.assert_called_once()
 
@@ -86,11 +92,11 @@ def test_wewu_notifier_secondary_admin_not_acked():
     event = _get_example_notify_task(False)
 
     notification = NotificationEntity(
-        notificationId=TEST_UUID,
-        jobId=JOB_UUID,
-        primaryAdmin=event["primaryAdmin"],
-        secondaryAdmin=event["secondaryAdmin"],
-        ackTimeoutSecs=event["ackTimeoutSecs"],
+        notification_id=TEST_UUID,
+        job_id=JOB_UUID,
+        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
+        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        ack_timeout_secs=event["ackTimeoutSecs"],
         acked=False,
     )
 
@@ -134,11 +140,11 @@ def test_wewu_notifier_secondary_admin_acked():
     event = _get_example_notify_task(False)
 
     notification = NotificationEntity(
-        notificationId=TEST_UUID,
-        jobId=JOB_UUID,
-        primaryAdmin=event["primaryAdmin"],
-        secondaryAdmin=event["secondaryAdmin"],
-        ackTimeoutSecs=event["ackTimeoutSecs"],
+        notification_id=TEST_UUID,
+        job_id=JOB_UUID,
+        primary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["primaryAdmin"]))),
+        secondary_admin=ServiceAdmin(**ServiceAdminSchema().loads(json.dumps(event["secondaryAdmin"]))),
+        ack_timeout_secs=event["ackTimeoutSecs"],
         acked=True,
     )
 
