@@ -25,8 +25,14 @@ notification_repository = NotificationRepository(mongo_client)
 
 @wewu_event_cloud_function
 def wewu_notifier(event: dict):
+    logger.info("Received notification event", event=event)
     notification_event_parsed = send_notification_event_schema.load(event)
     notification_event = SendNotificationEvent(**notification_event_parsed)
+    logger.info(
+        "Escalation number",
+        escalation_number=notification_event.escalation_number,
+        type=type(notification_event.escalation_number),
+    )
     if notification_event.escalation_number == 0:
         notify_first_admin(notification_event)
     else:
