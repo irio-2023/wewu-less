@@ -1,11 +1,10 @@
 import dataclasses
 import os
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from cloudevents.http import CloudEvent
 from google.cloud import tasks_v2
-from mailjet_rest import Client
 
 from wewu_less.logging import get_logger
 from wewu_less.models.notification import NotificationEntity
@@ -15,15 +14,12 @@ from wewu_less.repositories.database import mongo_client
 from wewu_less.repositories.notification import NotificationRepository
 from wewu_less.schemas.notification import NotificationSchema
 from wewu_less.schemas.send_notification_event import SendNotificationEventSchema
-from wewu_less.utils import wewu_cloud_function
+from wewu_less.clients.email_client import EmailClient
+from wewu_less.utils import wewu_event_cloud_function
 
 logger = get_logger()
 
 notify_topic = os.environ["WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC"]
-notification_url = os.environ["NOTIFICATION_URL"]
-service_mail = os.environ["SERVICE_MAIL"]
-mail_api_key = os.environ["MAIL_API_KEY"]
-mail_api_secret = os.environ["MAIL_API_SECRET"]
 queue_name = os.environ["WEWU_CLOUD_TASKS_QUEUE_NAME"]
 queue_location = os.environ["WEWU_CLOUD_TASKS_QUEUE_REGION"]
 queue_project = os.environ["WEWU_CLOUD_TASKS_QUEUE_PROJECT"]
@@ -38,11 +34,9 @@ notification_schema = NotificationSchema()
 notification_repository = NotificationRepository(mongo_client)
 
 
-@wewu_cloud_function
-def wewu_notifier(cloud_event: CloudEvent):
-    notification_event_parsed = send_notification_event_schema.load(
-        cloud_event.get_data()
-    )
+@wewu_event_cloud_function
+def wewu_notifier(event: dict):
+    notification_event_parsed = send_notification_event_schema.load(event)
     notification_event = SendNotificationEvent(**notification_event_parsed)
     if notification_event.escalation_number == 0:
         notify_first_admin(notification_event)
@@ -64,7 +58,7 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
             "body": payload.encode(),
             "headers": {"Content-Type": "application/json"},
         },
-        "schedule_time": datetime.utcnow()
+        "schedule_time": datetime.now(timezone.utc)
         + timedelta(seconds=notification_event.ack_timeout_secs),
     }
     task_request = {"parent": queue_path, "task": task}
@@ -125,26 +119,8 @@ def send_to_admin(notification_event: SendNotificationEvent, admin: ServiceAdmin
 
 
 def send_email(notification_event: SendNotificationEvent, email: str):
-    try:
-        mailjet = Client(auth=(mail_api_key, mail_api_secret))
-        url = f"{notification_url}?notificationId={notification_event.notification_id}"
-        data = {
-            "FromEmail": service_mail,
-            "FromName": "Wewu Alerter",
-            "Subject": "[WEWU] Service fail detected",
-            "Text-part": f"Fail for job {notification_event.job_id} detected.\n ACK: {url}",
-            "Recipients": [{"Email": email}],
-        }
-        result = mailjet.send.create(data=data)
-        if result.status_code != 200:
-            raise Exception(result.status_code, result.text)
-    except Exception:
-        logger.exception(
-            "Failed to send mail",
-            mail=email,
-            notification_id=notification_event.notification_id,
-        )
-        raise
+    mail_client = EmailClient()
+    mail_client.send_notification(notification_event, email)
 
 
 def send_sms(notification_event: SendNotificationEvent, phone_number: str):

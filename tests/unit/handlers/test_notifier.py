@@ -1,11 +1,13 @@
 import uuid
 from unittest.mock import MagicMock, patch
+import json
 
 from cloudevents.http import CloudEvent
 from requests import Response
 
 from wewu_less.handlers.notifier import wewu_notifier
 from wewu_less.models.notification import NotificationEntity
+from tests.unit.utils import make_event_from_json_str
 
 JOB_UUID = uuid.uuid4()
 TEST_UUID = uuid.uuid4()
@@ -13,13 +15,13 @@ TEST_UUID = uuid.uuid4()
 
 def _get_example_notify_task(
     Primary: bool = True,
-) -> (CloudEvent):
+) -> dict:
     test_mail_1 = "abc@maileTutaj.com"
     test_mail_2 = "abc2@maileTutaj.com"
     escalation_number = 0 if Primary else 1
-    notification_id = None if Primary else TEST_UUID
+    notification_id = None if Primary else str(TEST_UUID)
     request_json_object = {
-        "jobId": JOB_UUID,
+        "jobId": str(JOB_UUID),
         "primaryAdmin": {
             "email": test_mail_1,
         },
@@ -30,11 +32,7 @@ def _get_example_notify_task(
         "notificationId": notification_id,
         "escalationNumber": escalation_number,
     }
-    attributes = {
-        "type": "com.example.sampletype1",
-        "source": "https://example.com/event-producer",
-    }
-    return CloudEvent(attributes, request_json_object)
+    return request_json_object
 
 
 def test_wewu_notifier_primary_admin():
@@ -43,9 +41,9 @@ def test_wewu_notifier_primary_admin():
     notification = NotificationEntity(
         notificationId=TEST_UUID,
         jobId=JOB_UUID,
-        primaryAdmin=event.get_data()["primaryAdmin"],
-        secondaryAdmin=event.get_data()["secondaryAdmin"],
-        ackTimeoutSecs=event.get_data()["ackTimeoutSecs"],
+        primaryAdmin=event["primaryAdmin"],
+        secondaryAdmin=event["secondaryAdmin"],
+        ackTimeoutSecs=event["ackTimeoutSecs"],
         acked=False,
     )
 
@@ -76,6 +74,7 @@ def test_wewu_notifier_primary_admin():
         patch("uuid.uuid4", uuid_mock),
         patch("mailjet_rest.client.Client.__getattr__", mailjet_mock),
     ):
+        event = make_event_from_json_str(json.dumps(event))
         wewu_notifier(event)
 
     mock_queue.assert_called_once()
@@ -90,9 +89,9 @@ def test_wewu_notifier_secondary_admin_not_acked():
     notification = NotificationEntity(
         notificationId=TEST_UUID,
         jobId=JOB_UUID,
-        primaryAdmin=event.get_data()["primaryAdmin"],
-        secondaryAdmin=event.get_data()["secondaryAdmin"],
-        ackTimeoutSecs=event.get_data()["ackTimeoutSecs"],
+        primaryAdmin=event["primaryAdmin"],
+        secondaryAdmin=event["secondaryAdmin"],
+        ackTimeoutSecs=event["ackTimeoutSecs"],
         acked=False,
     )
 
@@ -123,6 +122,7 @@ def test_wewu_notifier_secondary_admin_not_acked():
         patch("uuid.uuid4", uuid_mock),
         patch("mailjet_rest.client.Client.__getattr__", mailjet_mock),
     ):
+        event = make_event_from_json_str(json.dumps(event))
         wewu_notifier(event)
 
     mock_queue.assert_not_called()
@@ -137,9 +137,9 @@ def test_wewu_notifier_secondary_admin_acked():
     notification = NotificationEntity(
         notificationId=TEST_UUID,
         jobId=JOB_UUID,
-        primaryAdmin=event.get_data()["primaryAdmin"],
-        secondaryAdmin=event.get_data()["secondaryAdmin"],
-        ackTimeoutSecs=event.get_data()["ackTimeoutSecs"],
+        primaryAdmin=event["primaryAdmin"],
+        secondaryAdmin=event["secondaryAdmin"],
+        ackTimeoutSecs=event["ackTimeoutSecs"],
         acked=True,
     )
 
@@ -170,6 +170,7 @@ def test_wewu_notifier_secondary_admin_acked():
         patch("uuid.uuid4", uuid_mock),
         patch("mailjet_rest.client.Client.__getattr__", mailjet_mock),
     ):
+        event = make_event_from_json_str(json.dumps(event))
         wewu_notifier(event)
 
     mock_queue.assert_not_called()
