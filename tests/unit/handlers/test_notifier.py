@@ -1,13 +1,12 @@
+import json
 import uuid
 from unittest.mock import MagicMock, patch
-import json
 
-from cloudevents.http import CloudEvent
 from requests import Response
 
+from tests.unit.utils import make_event_from_json_str
 from wewu_less.handlers.notifier import wewu_notifier
 from wewu_less.models.notification import NotificationEntity
-from tests.unit.utils import make_event_from_json_str
 
 JOB_UUID = uuid.uuid4()
 TEST_UUID = uuid.uuid4()

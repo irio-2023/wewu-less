@@ -3,9 +3,9 @@ import os
 import uuid
 from datetime import datetime, timedelta, timezone
 
-from cloudevents.http import CloudEvent
 from google.cloud import tasks_v2
 
+from wewu_less.clients.email_client import EmailClient
 from wewu_less.logging import get_logger
 from wewu_less.models.notification import NotificationEntity
 from wewu_less.models.send_notification_event import SendNotificationEvent
@@ -14,7 +14,6 @@ from wewu_less.repositories.database import mongo_client
 from wewu_less.repositories.notification import NotificationRepository
 from wewu_less.schemas.notification import NotificationSchema
 from wewu_less.schemas.send_notification_event import SendNotificationEventSchema
-from wewu_less.clients.email_client import EmailClient
 from wewu_less.utils import wewu_event_cloud_function
 
 logger = get_logger()
