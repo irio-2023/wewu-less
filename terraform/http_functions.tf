@@ -55,8 +55,8 @@ locals {
 }
 
 data "wewu_api_register_iam_member" "invoker" {
-  project = local.http_functions.wewu_api_register_service.project
-  region = local.http_functions.wewu_api_register_service.region
+  project = local.google_cloudfunctions2_function.http_cf_template.project
+  region = local.google_cloudfunctions2_function.http_cf_template.region
   function_name = local.http_functions.wewu_api_register_service.name
 
   role = "roles/cloudfunctions.invoker"
@@ -64,8 +64,8 @@ data "wewu_api_register_iam_member" "invoker" {
 }
 
 data "wewu_api_delete_iam_member" "invoker" {
-  project = local.http_functions.wewu_api_delete_service.project
-  region = local.http_functions.wewu_api_delete_service.region
+  project = local.google_cloudfunctions2_function.http_cf_template.project
+  region = local.google_cloudfunctions2_function.http_cf_template.region
   function_name = local.http_functions.wewu_api_delete_service.name
 
   role = "roles/cloudfunctions.invoker"
