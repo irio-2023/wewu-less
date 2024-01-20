@@ -107,6 +107,7 @@ def _publish_send_notification_events(
                 primary_admin=job.primary_admin,
                 secondary_admin=job.secondary_admin,
                 ack_timeout_secs=job.ack_timeout,
+                escalation_number=0,
             )
         )
 
