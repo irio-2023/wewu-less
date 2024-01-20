@@ -1,5 +1,4 @@
 import dataclasses
-import json
 import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta, timezone

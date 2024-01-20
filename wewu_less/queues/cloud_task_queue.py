@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-from base64 import b64encode
 
 from google.cloud import tasks_v2
 
