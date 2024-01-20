@@ -199,6 +199,9 @@ jobs:
       - name: Copy terraform files
         run: cp -rf terraform/* .
 
+      - name: remove lock
+        run: terraform force-unlock -force 1705769900789067
+
       - name: Init terraform
         run: terraform init
 
