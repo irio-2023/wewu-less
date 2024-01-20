@@ -44,7 +44,9 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
         seconds=notification_event.ack_timeout_secs
     )
     json_notification_event = send_notification_event_schema.dumps(notification_event)
-    payload = f'"messages": [{{"data": {b64encode(json_notification_event.encode())}}}]'
+    encoded = str(b64encode(json_notification_event.encode()))
+    encoded = encoded[2 : len(encoded) - 1]
+    payload = f'{{"messages": [{{"data": "{encoded}" }}]}}'
     queue.publish_on_notifier_topic(payload, schedule_time)
 
 
