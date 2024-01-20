@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from base64 import b64encode
 
 from google.cloud import tasks_v2
 
@@ -33,7 +34,7 @@ class CloudTaskQueue:
             http_request=tasks_v2.HttpRequest(
                 http_method=tasks_v2.HttpMethod.POST,
                 url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish?key={pubsub_http_key}",
-                body=payload.encode(),
+                body=payload,
             ),
             schedule_time=schedule_time,
         )

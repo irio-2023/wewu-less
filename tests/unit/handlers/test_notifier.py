@@ -140,7 +140,7 @@ def test_wewu_notifier_secondary_admin_not_acked():
 
     mock_queue.assert_not_called()
     mongo_mock_insert.assert_not_called()
-    mongo_mock_find.assert_called_once_with(TEST_UUID)
+    mongo_mock_find.assert_called_once_with(str(TEST_UUID))
     mailjet_mock.assert_called_once()
 
 
@@ -192,5 +192,5 @@ def test_wewu_notifier_secondary_admin_acked():
 
     mock_queue.assert_not_called()
     mongo_mock_insert.assert_not_called()
-    mongo_mock_find.assert_called_once_with(TEST_UUID)
+    mongo_mock_find.assert_called_once_with(str(TEST_UUID))
     mailjet_mock.assert_not_called()

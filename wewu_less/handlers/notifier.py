@@ -1,6 +1,7 @@
 import dataclasses
 import json
 import uuid
+from base64 import b64encode
 from datetime import datetime, timedelta, timezone
 
 from wewu_less.clients.email_client import EmailClient
@@ -44,18 +45,12 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
         seconds=notification_event.ack_timeout_secs
     )
     json_notification_event = send_notification_event_schema.dumps(notification_event)
-    payload = {
-        "messages": [
-            {
-                "data": json_notification_event,
-            }
-        ]
-    }
-    queue.publish_on_notifier_topic(json.dumps(payload), schedule_time)
+    payload = f'"messages": [{{"data": {b64encode(json_notification_event.encode())}}}]'
+    queue.publish_on_notifier_topic(payload, schedule_time)
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:
-    notification = notification_repository.get_notification_by_id(notification_id)
+    notification = notification_repository.get_notification_by_id(str(notification_id))
     if notification is None:
         logger.error("Notification not found", notification_id=notification_id)
         raise Exception
