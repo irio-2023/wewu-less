@@ -14,6 +14,9 @@ locals {
       handler = "wewu_api_register_service"
       memory = "256Mi"
       timeout_seconds = 3
+
+      policy_data = data.google_iam_policy.noauth.policy_data
+      
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
         WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic
@@ -24,6 +27,9 @@ locals {
       handler = "wewu_api_delete_service"
       memory = "256Mi"
       timeout_seconds = 3
+
+      policy_data = data.google_iam_policy.noauth.policy_data
+
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
         WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic

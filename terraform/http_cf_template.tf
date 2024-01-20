@@ -34,3 +34,12 @@ resource "google_cloudfunctions2_function" "http_cf_template" {
 
   location = local.region
 }
+
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
