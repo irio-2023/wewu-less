@@ -123,6 +123,8 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/deploy')
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      TF_VAR_MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
+      TF_VAR_MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
@@ -179,6 +181,8 @@ jobs:
     if: startsWith(github.event.ref, 'refs/tags/destroy')
     env:
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      TF_VAR_MAIL_API_KEY: ${{ secrets.MAIL_API_KEY }}
+      TF_VAR_MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4
