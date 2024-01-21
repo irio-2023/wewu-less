@@ -5,11 +5,11 @@ locals {
   }
 }
 
-resource "google_cloud_run_service_iam_member" "public_cf_member" {
+resource "google_cloudfunctions_function_iam_member" "public_cf_member" {
   for_each = local.public_cloud_functions
-  location = google_cloudfunctions2_function.http_cf_template[each.key].location
-  member   = "allUsers"
-  role     = "roles/run.invoker"
-  project  = local.gcp_project
-  service  = google_cloudfunctions2_function.http_cf_template[each.key].name
+  project = local.gcp_project
+  region = local.region
+  cloud_function = google_cloudfunctions2_function.http_cf_template[each.key].name
+  role = "roles/cloudfunctions.invoker"
+  member = "allUsers"
 }
