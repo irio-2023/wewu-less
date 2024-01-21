@@ -37,6 +37,13 @@ def last_notification_collection():
     last_notification.drop()
 
 
+@pytest.fixture
+def notification_collection():
+    notification: Collection = mongo_client.notification_database.notifications
+    yield notification
+    notification.drop()
+
+
 def job_fixture(
     job_id: UUID,
     jobs_collection: Optional[Collection] = None,

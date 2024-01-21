@@ -45,6 +45,7 @@ def _wewu_json_http_cloud_function(fn, accepts_body):
             else:
                 response = fn()
         except ValidationError as ve:
+            logger.exception("Failed to validate request in the cloud function")
             return ve.messages_dict, 400
         except Exception:
             logger.exception(

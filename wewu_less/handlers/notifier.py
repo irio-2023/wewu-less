@@ -1,5 +1,7 @@
 import dataclasses
+import json
 import uuid
+from base64 import b64encode
 from datetime import datetime, timedelta, timezone
 
 from wewu_less.clients.email_client import EmailClient
@@ -26,6 +28,11 @@ notification_repository = NotificationRepository(mongo_client)
 def wewu_notifier(event: dict):
     notification_event_parsed = send_notification_event_schema.load(event)
     notification_event = SendNotificationEvent(**notification_event_parsed)
+    logger.info(
+        "Escalation number",
+        escalation_number=notification_event.escalation_number,
+        type=type(notification_event.escalation_number),
+    )
     if notification_event.escalation_number == 0:
         notify_first_admin(notification_event)
     else:
@@ -37,25 +44,33 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
     schedule_time = datetime.now(timezone.utc) + timedelta(
         seconds=notification_event.ack_timeout_secs
     )
-    payload = send_notification_event_schema.dumps(notification_event)
-    queue.publish_on_notifier_topic(payload, schedule_time)
+    json_notification_event = send_notification_event_schema.dumps(notification_event)
+    encoded = b64encode(json_notification_event.encode())
+    payload = {
+        "messages": [
+            {
+                "data": encoded.decode(),
+            }
+        ]
+    }
+    queue.publish_on_notifier_topic(json.dumps(payload), schedule_time)
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:
-    notification = notification_repository.get_notification_by_id(notification_id)
+    notification = notification_repository.get_notification_by_id(str(notification_id))
     if notification is None:
-        logger.error("Notification not found", notification_id=notification_id)
+        logger.error("Notification not found", notification_id=str(notification_id))
         raise Exception
     return notification.acked
 
 
 def add_notification(notification_event: SendNotificationEvent):
     notification = NotificationEntity(
-        notificationId=notification_event.notification_id,
-        jobId=notification_event.job_id,
-        primaryAdmin=notification_event.primary_admin,
-        secondaryAdmin=notification_event.secondary_admin,
-        ackTimeoutSecs=notification_event.ack_timeout_secs,
+        notification_id=notification_event.notification_id,
+        job_id=notification_event.job_id,
+        primary_admin=notification_event.primary_admin,
+        secondary_admin=notification_event.secondary_admin,
+        ack_timeout_secs=notification_event.ack_timeout_secs,
         acked=False,
     )
     notification_repository.insert_notification(notification)

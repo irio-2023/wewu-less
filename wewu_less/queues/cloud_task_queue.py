@@ -1,8 +1,12 @@
 import os
+from datetime import datetime
 
 from google.cloud import tasks_v2
 
 from wewu_less.logging import get_logger
+
+service_account_email = os.environ["WEWU_SERVICE_ACCOUNT_EMAIL"]
+pubsub_http_key = os.environ["WEWU_PUBSUB_HTTP_KEY"]
 
 queue_name = os.environ["WEWU_CLOUD_TASKS_QUEUE_NAME"]
 queue_location = os.environ["WEWU_CLOUD_TASKS_QUEUE_REGION"]
@@ -24,27 +28,21 @@ class CloudTaskQueue:
         self.client = client
         self.queue_path = queue_path
 
-    def publish_on_notifier_topic(self, payload, schedule_time):
-        self.publish_task(
-            url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish",
-            payload=payload,
+    def publish_on_notifier_topic(self, payload: str, schedule_time: datetime):
+        task = tasks_v2.Task(
+            http_request=tasks_v2.HttpRequest(
+                http_method=tasks_v2.HttpMethod.POST,
+                url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish?key={pubsub_http_key}",
+                body=payload.encode(),
+            ),
             schedule_time=schedule_time,
         )
+        logger.info("Publishing task to notifier topic", payload=payload)
+        self.publish_task(task)
 
-    def publish_task(self, url, payload, schedule_time):
-        task = {
-            "http_request": {
-                "http_method": tasks_v2.HttpMethod.POST,
-                "url": url,
-                "body": payload.encode(),
-                "headers": {"Content-Type": "application/json"},
-            },
-            "schedule_time": schedule_time,
-        }
-        task_request = {"parent": self.queue_path, "task": task}
-
+    def publish_task(self, task: tasks_v2.Task):
         try:
-            self.client.create_task(request=task_request)
+            self.client.create_task(request={"parent": self.queue_path, "task": task})
         except Exception:
             logger.exception("Failed to schedule cloud task")
             raise
