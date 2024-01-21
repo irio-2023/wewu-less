@@ -26,7 +26,7 @@ def wewu_cloud_function(fn):
 
 def wewu_json_http_cloud_function(*args, accepts_body=True, accepts_params=False):
     return lambda x: _wewu_json_http_cloud_function(
-        x, accepts_body=accepts_body, accepts_params=False
+        x, accepts_body=accepts_body, accepts_params=accepts_params
     )
 
 
