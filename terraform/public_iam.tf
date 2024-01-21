@@ -13,3 +13,11 @@ resource "google_cloudfunctions2_function_iam_member" "public_cf_member" {
   role = "roles/cloudfunctions.invoker"
   member = "allUsers"
 }
+
+resource "google_cloud_run_service_iam_member" "public_cf_cloud_run_member" {
+  for_each = local.public_cloud_functions
+  member  = "allUsers"
+  role    = "roles/run.invoker"
+  location = google_cloudfunctions2_function.http_cf_template[each.key].location
+  service = replace(google_cloudfunctions2_function.http_cf_template[each.key].name, "_", "-")
+}
