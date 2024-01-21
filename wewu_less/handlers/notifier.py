@@ -129,4 +129,7 @@ def send_email(notification_event: SendNotificationEvent, email: str):
 
 
 def send_sms(notification_event: SendNotificationEvent, phone_number: str):
-    pass
+    from wewu_less.clients.sms import SMSClient
+
+    sms_client = SMSClient()
+    sms_client.send_notification(notification_event, phone_number)
