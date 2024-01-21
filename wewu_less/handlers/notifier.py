@@ -59,7 +59,7 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
 def notification_acked(notification_id: uuid.UUID) -> bool:
     notification = notification_repository.get_notification_by_id(str(notification_id))
     if notification is None:
-        logger.error("Notification not found", notification_id=notification_id)
+        logger.error("Notification not found", notification_id=str(notification_id))
         raise Exception
     return notification.acked
 

@@ -1,9 +1,12 @@
-from marshmallow import Schema, fields
+from marshmallow import EXCLUDE, Schema, fields
 
 from wewu_less.schemas.service_admin import ServiceAdminSchema
 
 
 class NotificationSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
     notification_id = fields.UUID(data_key="notificationId")
     job_id = fields.UUID(data_key="jobId")
     primary_admin = fields.Nested(
