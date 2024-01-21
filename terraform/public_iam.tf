@@ -8,7 +8,7 @@ locals {
 resource "google_cloudfunctions2_function_iam_member" "public_cf_member" {
   for_each = local.public_cloud_functions
   project = local.gcp_project
-  region = local.region
+  location = google_cloudfunctions2_function.http_cf_template[each.key].location
   cloud_function = google_cloudfunctions2_function.http_cf_template[each.key].name
   role = "roles/cloudfunctions.invoker"
   member = "allUsers"
