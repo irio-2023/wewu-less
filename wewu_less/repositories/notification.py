@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 
 from pymongo import MongoClient
@@ -37,3 +38,8 @@ class NotificationRepository:
 
     def insert_notification(self, notification: NotificationEntity) -> None:
         self.notification_events.insert_one(notification_schema.dump(notification))
+
+    def ack_notification(self, notification_id: uuid.UUID):
+        self.notification_events.update_one(
+            {"notificationId": str(notification_id)}, {"$set": {"acked": True}}
+        )

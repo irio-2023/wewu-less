@@ -42,7 +42,7 @@ locals {
         WEWU_CLOUD_TASKS_QUEUE_REGION = google_cloud_tasks_queue.notifier_cloud_tasks_queue.location
         WEWU_CLOUD_TASKS_QUEUE_PROJECT = google_cloud_tasks_queue.notifier_cloud_tasks_queue.project
         WEWU_SEND_NOTIFICATION_EVENT_QUEUE_TOPIC = local.queues.send_notification_event_queue.topic
-        NOTIFICATION_URL = "https://api.wewu.io/notify"
+        NOTIFICATION_URL = google_cloudfunctions2_function.http_cf_template["wewu_acker"].url
         SERVICE_MAIL = "wewu.alert.inator@gmail.com"
         MAIL_API_KEY = var.MAIL_API_KEY
         MAIL_API_SECRET = var.MAIL_API_SECRET_KEY
