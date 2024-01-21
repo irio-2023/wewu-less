@@ -3,6 +3,7 @@ import json
 import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 from wewu_less.clients.email_client import EmailClient
 from wewu_less.logging import get_logger
@@ -14,7 +15,7 @@ from wewu_less.repositories.database import mongo_client
 from wewu_less.repositories.notification import NotificationRepository
 from wewu_less.schemas.notification import NotificationSchema
 from wewu_less.schemas.send_notification_event import SendNotificationEventSchema
-from wewu_less.utils import wewu_event_cloud_function
+from wewu_less.utils import wewu_event_cloud_function, wewu_json_http_cloud_function
 
 logger = get_logger()
 
@@ -37,6 +38,22 @@ def wewu_notifier(event: dict):
         notify_first_admin(notification_event)
     else:
         notify_second_admin(notification_event)
+
+
+@wewu_json_http_cloud_function(accepts_body=False, accepts_params=True)
+def wewu_acker(request_params: dict):
+    notification_id: Optional[str] = request_params.get("notificationId")
+
+    if not notification_id:
+        logger.warning("Acker was called without notification_id")
+        return {"error": "notificationId param wasn't found"}, 404
+
+    try:
+        parsed_notification_id = uuid.UUID(notification_id)
+    except ValueError:
+        return {"error": "Invalid notificationId, it must be in UUID format"}, 400
+
+    notification_repository.ack_notification(parsed_notification_id)
 
 
 def publish_pubsub_with_delay(notification_event: SendNotificationEvent):

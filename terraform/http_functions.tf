@@ -13,7 +13,8 @@ locals {
       source = "wewu_less/handlers/entry.py"
       handler = "wewu_api_register_service"
       memory = "256Mi"
-      timeout_seconds = 3
+      timeout_seconds = 5
+      is_public = true
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
         WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic
@@ -23,7 +24,8 @@ locals {
       source = "wewu_less/handlers/entry.py"
       handler = "wewu_api_delete_service"
       memory = "256Mi"
-      timeout_seconds = 3
+      timeout_seconds = 5
+      is_public = true
       environment = {
         WEWU_REGISTER_TASK_QUEUE_TOPIC = local.queues.register_service_task_queue.topic
         WEWU_DELETE_TASK_QUEUE_TOPIC = local.queues.delete_service_task_queue.topic
@@ -43,6 +45,15 @@ locals {
       handler = "wewu_tester"
       memory = "256Mi"
       timeout_seconds = 15
+      is_public = true
+      environment = {}
+    }
+    wewu_acker = {
+      source = "wewu_less/handlers/notifier.py"
+      handler = "wewu_acker"
+      memory = "256Mi"
+      timeout_seconds = 10
+      is_public = true
       environment = {}
     }
   }

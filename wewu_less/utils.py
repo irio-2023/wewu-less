@@ -24,26 +24,31 @@ def wewu_cloud_function(fn):
     return wewu_cloud_function_wrapper
 
 
-def wewu_json_http_cloud_function(*args, accepts_body=True):
-    return lambda x: _wewu_json_http_cloud_function(x, accepts_body=accepts_body)
+def wewu_json_http_cloud_function(*args, accepts_body=True, accepts_params=False):
+    return lambda x: _wewu_json_http_cloud_function(
+        x, accepts_body=accepts_body, accepts_params=False
+    )
 
 
-def _wewu_json_http_cloud_function(fn, accepts_body):
+def _wewu_json_http_cloud_function(fn, accepts_body, accepts_params):
     def wewu_json_http_cloud_function_wrapper(request: flask.Request, *args, **kwargs):
+        function_args_list = []
+
         if accepts_body:
             content_header = request.headers["content-type"]
             if content_header != "application/json":
                 return NON_JSON_ERROR
+            request_json: dict = request.get_json(silent=True)
+            if not request_json:
+                return "Invalid body, it needs to be valid JSON", 400
+            function_args_list.append(request_json)
+
+        if accepts_params:
+            function_args_list.append(request.args.to_dict(flat=True))
 
         try:
-            if accepts_body:
-                request_json: dict = request.get_json(silent=True)
-                if not request_json:
-                    return "Invalid body, it needs to be valid JSON", 400
-
-                response = fn(request_json)
-            else:
-                response = fn()
+            function_args = tuple(function_args_list)
+            response = fn(*function_args)
         except ValidationError as ve:
             logger.exception("Failed to validate request in the cloud function")
             return ve.messages_dict, 400
