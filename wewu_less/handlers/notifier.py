@@ -5,7 +5,6 @@ from base64 import b64encode
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from wewu_less.clients.email_client import EmailClient
 from wewu_less.logging import get_logger
 from wewu_less.models.notification import NotificationEntity
 from wewu_less.models.send_notification_event import SendNotificationEvent
@@ -122,6 +121,8 @@ def send_to_admin(notification_event: SendNotificationEvent, admin: ServiceAdmin
 
 
 def send_email(notification_event: SendNotificationEvent, email: str):
+    from wewu_less.clients.email_client import EmailClient
+
     mail_client = EmailClient()
     mail_client.send_notification(notification_event, email)
 
