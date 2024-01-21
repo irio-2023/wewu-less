@@ -5,7 +5,7 @@ locals {
   }
 }
 
-resource "google_cloudfunctions_function_iam_member" "public_cf_member" {
+resource "google_cloudfunctions2_function_iam_member" "public_cf_member" {
   for_each = local.public_cloud_functions
   project = local.gcp_project
   region = local.region
