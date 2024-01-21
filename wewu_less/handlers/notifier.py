@@ -9,7 +9,6 @@ from wewu_less.logging import get_logger
 from wewu_less.models.notification import NotificationEntity
 from wewu_less.models.send_notification_event import SendNotificationEvent
 from wewu_less.models.service_admin import ServiceAdmin
-from wewu_less.queues.cloud_task_queue import CloudTaskQueue
 from wewu_less.repositories.database import mongo_client
 from wewu_less.repositories.notification import NotificationRepository
 from wewu_less.schemas.notification import NotificationSchema
@@ -56,6 +55,8 @@ def wewu_acker(request_params: dict):
 
 
 def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
+    from wewu_less.queues.cloud_task_queue import CloudTaskQueue
+
     queue = CloudTaskQueue()
     schedule_time = datetime.now(timezone.utc) + timedelta(
         seconds=notification_event.ack_timeout_secs
