@@ -33,7 +33,7 @@ class CloudTaskQueue:
             http_request=tasks_v2.HttpRequest(
                 http_method=tasks_v2.HttpMethod.POST,
                 url=f"https://pubsub.googleapis.com/v1/{notify_topic}:publish?key={pubsub_http_key}",
-                body=payload,
+                body=payload.encode(),
             ),
             schedule_time=schedule_time,
         )

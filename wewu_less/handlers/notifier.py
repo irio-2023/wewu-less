@@ -1,4 +1,5 @@
 import dataclasses
+import json
 import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta, timezone
@@ -44,10 +45,15 @@ def publish_pubsub_with_delay(notification_event: SendNotificationEvent):
         seconds=notification_event.ack_timeout_secs
     )
     json_notification_event = send_notification_event_schema.dumps(notification_event)
-    encoded = str(b64encode(json_notification_event.encode()))
-    encoded = encoded[2 : len(encoded) - 1]
-    payload = f'{{"messages": [{{"data": "{encoded}" }}]}}'
-    queue.publish_on_notifier_topic(payload, schedule_time)
+    encoded = b64encode(json_notification_event.encode())
+    payload = {
+        "messages": [
+            {
+                "data": encoded.decode(),
+            }
+        ]
+    }
+    queue.publish_on_notifier_topic(json.dumps(payload), schedule_time)
 
 
 def notification_acked(notification_id: uuid.UUID) -> bool:
