@@ -19,7 +19,7 @@ class NotificationRepository:
     def get_notification_by_id(
         self, notification_id: str
     ) -> Optional[NotificationEntity]:
-        self.ping_results.find_one({"notification_id": notification_id})
+        return self.ping_results.find_one({"notification_id": notification_id})
 
     def insert_notification(self, notification: NotificationEntity) -> None:
         self.ping_results.insert_one(notification_schema.dump(notification))
