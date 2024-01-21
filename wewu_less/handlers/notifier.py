@@ -88,6 +88,10 @@ def notify_first_admin(notification_event: SendNotificationEvent):
 
 def notify_second_admin(notification_event: SendNotificationEvent):
     if notification_acked(notification_event.notification_id):
+        logger.info(
+            "Notification already acked",
+            notification_id=notification_event.notification_id,
+        )
         return
     send_to_admin(notification_event, notification_event.secondary_admin)
 
