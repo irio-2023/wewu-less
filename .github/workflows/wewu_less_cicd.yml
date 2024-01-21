@@ -127,6 +127,7 @@ jobs:
       TF_VAR_MAIL_API_SECRET_KEY: ${{ secrets.MAIL_API_SECRET_KEY }}
       TF_VAR_WEWU_PUBSUB_HTTP_KEY: ${{ secrets.PUBSUB_HTTP_KEY }}
       TF_VAR_WEWU_SERVICE_ACCOUNT_EMAIL: ${{ secrets.CICD_GOOGLE_ACCOUNT_EMAIL }}
+      TF_VAR_TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
     steps:
       - name: Checkout current repository
         uses: actions/checkout@v4

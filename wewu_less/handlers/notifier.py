@@ -105,6 +105,10 @@ def notify_first_admin(notification_event: SendNotificationEvent):
 
 def notify_second_admin(notification_event: SendNotificationEvent):
     if notification_acked(notification_event.notification_id):
+        logger.info(
+            "Notification already acked, skipping",
+            notification_id=notification_event.notification_id,
+        )
         return
     send_to_admin(notification_event, notification_event.secondary_admin)
 
@@ -129,4 +133,7 @@ def send_email(notification_event: SendNotificationEvent, email: str):
 
 
 def send_sms(notification_event: SendNotificationEvent, phone_number: str):
-    pass
+    from wewu_less.clients.sms import SMSClient
+
+    sms_client = SMSClient()
+    sms_client.send_notification(notification_event, phone_number)
