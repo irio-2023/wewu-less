@@ -20,7 +20,7 @@ class ServiceAdminSchema(Schema):
         is_valid = True
         if phone_number is not None:
             is_valid = (
-                len(phone_number) == 9
+                9 <= len(phone_number) <= 12
                 and all([c.isdigit() for c in phone_number[1:]])
                 and (phone_number[0].isdigit() or phone_number[0] == "+")
             )
